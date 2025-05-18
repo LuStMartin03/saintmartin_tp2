@@ -4,5 +4,5 @@ Sistema de gestión para un restaurante
 
 ---
 
-## 👤 Integrante
+## Integrante
 - Lucía Saint Martin
