@@ -1,0 +1,73 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./bd.sqlite"
+}
+
+model Cliente {
+  clienteId            Int      @id @default(autoincrement())
+  nombre               String
+  correo               String
+  telefono             Int
+  contraseña           String
+  direccionDeDomicilio String
+  pedidos              Pedido[]
+  reservas             Reserva[]
+}
+
+model Administrador {
+  adminId     Int    @id @default(autoincrement())
+  correo      String
+  contraseña  String
+}
+
+model Plato {
+  platoId   Int     @id @default(autoincrement())
+  descripcion String
+  precio      Float
+  categoria   String
+  pedidos     PedidoPlato[]
+}
+
+model Mesa {
+  numeroDeMesa Int     @id @default(autoincrement())
+  estado       String
+  reservas     Reserva[]
+}
+
+model Pedido {
+  numeroDePedido     Int     @id @default(autoincrement())
+  clienteId          Int
+  montoTotal         Float
+  descuento          Float   @default(0)
+  domicilioDeEntrega String
+
+  cliente   Cliente   @relation(fields: [clienteId], references: [clienteId])
+  platos    PedidoPlato[]
+}
+
+model PedidoPlato {
+  pedidoId Int
+  platoId  Int
+
+  pedido   Pedido @relation(fields: [pedidoId], references: [numeroDePedido])
+  plato    Plato  @relation(fields: [platoId], references: [platoId])
+
+  @@id([pedidoId, platoId]) // clave primaria compuesta
+}
+
+model Reserva {
+  reservaId       Int      @id @default(autoincrement())
+  numeroDeMesa    Int
+  clienteId       Int
+  fechaDeReserva  DateTime
+
+  cliente Cliente @relation(fields: [clienteId], references: [clienteId])
+  mesa    Mesa    @relation(fields: [numeroDeMesa], references: [numeroDeMesa])
+}

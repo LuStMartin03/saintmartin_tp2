@@ -65,4 +65,3 @@ db.prepare(`
         FOREIGN KEY (clienteId) REFERENCES clientes(clienteId)
     );
 `).run();
-exports.default = db;

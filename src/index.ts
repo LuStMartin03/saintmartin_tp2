@@ -1,20 +1,18 @@
 import express from 'express';
-import usuariosRouter from './routers/usuario_routers';
-import platosRouter from './routers/platos_routers';
-import pedidosRouter from './routers/pedidos_routers';
+import clienteRouter from './routers/clienteRouter';
+import adminRouter from './routers/adminRouter';
+
 
 const app = express();
 app.use(express.json());
 
+
 app.get('/', (_req, res) => {
-    res.send('API del restaurante funcionando');
+    res.send('API - Restaurante “Lo de Miguel”');
 });
 
-app.use('/usuarios', usuariosRouter);
-
-app.use('/platos', platosRouter);
-
-app.use('/pedidos', pedidosRouter);
+app.use('/cliente', clienteRouter);
+app.use('/admin', adminRouter);
 
 
 const PORT = 3000;
