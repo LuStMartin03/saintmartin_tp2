@@ -5,7 +5,7 @@ const db = new PrismaClient();
 export class AdminService {
     async getAllAdmins() {
         try {
-            const admins = await db.administrador.findMany(); // Asegurate que sea la tabla correcta
+            const admins = await db.administrador.findMany();
             return admins;
         } catch (error) {
             console.error(error);

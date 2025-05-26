@@ -59,7 +59,7 @@ model PedidoPlato {
   pedido   Pedido @relation(fields: [pedidoId], references: [numeroDePedido])
   plato    Plato  @relation(fields: [platoId], references: [platoId])
 
-  @@id([pedidoId, platoId]) // clave primaria compuesta
+  @@id([pedidoId, platoId])
 }
 
 model Reserva {
