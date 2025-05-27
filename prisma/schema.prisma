@@ -9,64 +9,64 @@ datasource db {
   url      = "file:./bd.sqlite"
 }
 
-model Cliente {
-  clienteId            Int      @id @default(autoincrement())
-  nombre               String
-  correo               String
-  telefono             Int
-  contraseña           String
-  direccionDeDomicilio String
-  pedidos              Pedido[]
-  reservas             Reserva[]
+model Client {
+  clientId   Int       @id @default(autoincrement())
+  name       String
+  email      String
+  phone      Int
+  password   String
+  address    String
+  orders     Order[]
+  bookings   Booking[]
 }
 
-model Administrador {
-  adminId     Int    @id @default(autoincrement())
-  correo      String
-  contraseña  String
+model Admin {
+  adminId    Int     @id @default(autoincrement())
+  email      String
+  password   String
 }
 
-model Plato {
-  platoId   Int     @id @default(autoincrement())
-  descripcion String
-  precio      Float
-  categoria   String
-  pedidos     PedidoPlato[]
+model Dish {
+  dishId     Int     @id @default(autoincrement())
+  description String
+  price      Float
+  category   String
+  orders     OrderDish[]
 }
 
-model Mesa {
-  numeroDeMesa Int     @id @default(autoincrement())
-  estado       String
-  reservas     Reserva[]
+model Table {
+  tableNumber Int     @id @default(autoincrement())
+  status      String
+  bookings    Booking[]
 }
 
-model Pedido {
-  numeroDePedido     Int     @id @default(autoincrement())
-  clienteId          Int
-  montoTotal         Float
-  descuento          Float   @default(0)
-  domicilioDeEntrega String
+model Order {
+  orderNumber       Int     @id @default(autoincrement())
+  clientId          Int
+  totalAmount       Float
+  discount          Float   @default(0)
+  deliveryAddress   String
 
-  cliente   Cliente   @relation(fields: [clienteId], references: [clienteId])
-  platos    PedidoPlato[]
+  client   Client       @relation(fields: [clientId], references: [clientId])
+  dishes   OrderDish[]
 }
 
-model PedidoPlato {
-  pedidoId Int
-  platoId  Int
+model OrderDish {
+  orderId Int
+  dishId  Int
 
-  pedido   Pedido @relation(fields: [pedidoId], references: [numeroDePedido])
-  plato    Plato  @relation(fields: [platoId], references: [platoId])
+  order   Order @relation(fields: [orderId], references: [orderNumber])
+  dish    Dish  @relation(fields: [dishId], references: [dishId])
 
-  @@id([pedidoId, platoId])
+  @@id([orderId, dishId])
 }
 
-model Reserva {
-  reservaId       Int      @id @default(autoincrement())
-  numeroDeMesa    Int
-  clienteId       Int
-  fechaDeReserva  DateTime
+model Booking {
+  bookingId     Int      @id @default(autoincrement())
+  tableNumber   Int
+  clientId      Int
+  bookingDate   DateTime
 
-  cliente Cliente @relation(fields: [clienteId], references: [clienteId])
-  mesa    Mesa    @relation(fields: [numeroDeMesa], references: [numeroDeMesa])
+  client Client @relation(fields: [clientId], references: [clientId])
+  table  Table  @relation(fields: [tableNumber], references: [tableNumber])
 }
