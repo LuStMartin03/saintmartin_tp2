@@ -2,10 +2,9 @@ import { PrismaClient } from '@prisma/client';
 
 const db = new PrismaClient();
 
-interface GenerateNewAdmin {
-    adminId: number
-    correo: string
-    contraseña: string
+interface adminData {
+    correo: string;
+    contraseña: string;
 }
 
 export class AdminService {
@@ -14,46 +13,84 @@ export class AdminService {
             const admins = await db.administrador.findMany();
             return admins;
         } catch (error) {
-            console.error(error);
-            throw new Error("Error al obtener administradores.");
+            console.error("Error al obtener administradores desde la base de datos:", error);
+            throw new Error("No se pudieron obtener los administradores.");
         }
     }
 
-    async createAdmin(body: GenerateNewAdmin) {
-    try {
-      const admin = await db.administrador.create({
-        data: body
-      })
-      return admin;
-
-    } catch (error) {
-      console.error("Error creando administrador: ", body)
-      console.error(error);
-      throw new Error("Error al crear administrador.")
+    async createAdmin(body: adminData) {
+        try {
+            const admin = await db.administrador.create({
+                data: body,
+            });
+            return admin;
+        } catch (error) {
+            console.error("Error al crear administrador con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo crear el administrador.");
+        }
     }
-    }
 
+    async loginAdmin(body: adminData) {
+        try {
+            const admin = await db.administrador.findFirst({
+                where: {
+                    correo: body.correo,
+                    contraseña: body.contraseña
+                },
+            });
+            if (!admin) {
+                throw new Error(`No hay ningún administrador con los datos ingrasados.`)
+            }
+            return admin;
+        } catch (error) {
+            console.error("Error al crear administrador con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo crear el administrador.");
+        }
+    }
 
     async deleteAdmin(id: number) {
-    try {
-      const admin = await db.administrador.findFirst({
-        where: {adminId: id}            
-      })
+        try {
+            const admin = await db.administrador.findFirst({
+                where: { adminId: id },
+            });
 
-      if (!admin) {
-        throw new Error("Error al encontrar administrador con id: ${id}.")
-      }
+            if (!admin) {
+                throw new Error(`No se encontró ningún administrador con ID: ${id}`);
+            }
 
-      const deletedAdmin = await db.administrador.delete({
-        where: {adminId: id}            
-      })
+            const deletedAdmin = await db.administrador.delete({
+                where: { adminId: id },
+            });
 
-      return deletedAdmin;
+            return deletedAdmin;
 
-    } catch (error) {
-      console.error("Error eliminando administrador: ")
-      console.error(error);
-      throw new Error("Error al crear administrador.")
+        } catch (error) {
+            console.error(`Error al intentar eliminar el administrador con ID ${id}:`, error);
+            throw new Error(`No se pudo eliminar el administrador con ID ${id}.`);
+        }
     }
+
+    async changePassword(id: number, body: adminData) {
+        try {
+            const admin = await db.administrador.findFirst({
+                where: {
+                    adminId: id
+                },
+            });
+            if (!admin) {
+                throw new Error(`No hay ningún administrador con los datos ingrasados.`)
+            }
+            const changedAdmin = await db.administrador.update({
+                where: { adminId: id },
+                data: { contraseña: body.contraseña }})
+            return changedAdmin;
+
+        } catch (error) {
+            console.error("Error al cambiar contraseña con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo cambiar contraseña.");
+        }
     }
 }

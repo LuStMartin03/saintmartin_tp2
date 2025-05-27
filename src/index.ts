@@ -1,7 +1,6 @@
 import express from 'express';
-import clienteRouter from './routers/clienteRouter';
 import adminRouter from './routers/adminRouter';
-
+import tableRouter from './routers/tableRouter';
 
 const app = express();
 app.use(express.json());
@@ -11,8 +10,8 @@ app.get('/', (_req, res) => {
     res.send('API - Restaurante “Lo de Miguel”');
 });
 
-app.use('/cliente', clienteRouter);
 app.use('/admin', adminRouter);
+app.use('/table', tableRouter);
 
 
 const PORT = 3000;

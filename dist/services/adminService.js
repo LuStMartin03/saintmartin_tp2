@@ -10,40 +10,80 @@ class AdminService {
             return admins;
         }
         catch (error) {
-            console.error(error);
-            throw new Error("Error al obtener administradores.");
+            console.error("Error al obtener administradores desde la base de datos:", error);
+            throw new Error("No se pudieron obtener los administradores.");
         }
     }
     async createAdmin(body) {
         try {
             const admin = await db.administrador.create({
-                data: body
+                data: body,
             });
             return admin;
         }
         catch (error) {
-            console.error("Error creando administrador: ", body);
-            console.error(error);
-            throw new Error("Error al crear administrador.");
+            console.error("Error al crear administrador con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo crear el administrador.");
+        }
+    }
+    async loginAdmin(body) {
+        try {
+            const admin = await db.administrador.findFirst({
+                where: {
+                    correo: body.correo,
+                    contraseña: body.contraseña
+                },
+            });
+            if (!admin) {
+                throw new Error(`No hay ningún administrador con los datos ingrasados.`);
+            }
+            return admin;
+        }
+        catch (error) {
+            console.error("Error al crear administrador con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo crear el administrador.");
         }
     }
     async deleteAdmin(id) {
         try {
             const admin = await db.administrador.findFirst({
-                where: { adminId: id }
+                where: { adminId: id },
             });
             if (!admin) {
-                throw new Error("Error al encontrar administrador con id: ${id}");
+                throw new Error(`No se encontró ningún administrador con ID: ${id}`);
             }
             const deletedAdmin = await db.administrador.delete({
-                where: { adminId: id }
+                where: { adminId: id },
             });
             return deletedAdmin;
         }
         catch (error) {
-            console.error("Error eliminando administrador: ");
-            console.error(error);
-            throw new Error("Error al crear administrador.");
+            console.error(`Error al intentar eliminar el administrador con ID ${id}:`, error);
+            throw new Error(`No se pudo eliminar el administrador con ID ${id}.`);
+        }
+    }
+    async changePassword(id, body) {
+        try {
+            const admin = await db.administrador.findFirst({
+                where: {
+                    adminId: id
+                },
+            });
+            if (!admin) {
+                throw new Error(`No hay ningún administrador con los datos ingrasados.`);
+            }
+            const changedAdmin = await db.administrador.update({
+                where: { adminId: id },
+                data: { contraseña: body.contraseña }
+            });
+            return changedAdmin;
+        }
+        catch (error) {
+            console.error("Error al cambiar contraseña con los datos:", body);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo cambiar contraseña.");
         }
     }
 }

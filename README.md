@@ -9,13 +9,13 @@ Sistema de gestión para restaurante.
 
 ---
 
-## Comandos para poder usar la cosa esta
+## Comandos utililes
 
 Dependencias:
 ```npm install```
 
 Para prisma:
-```npm prisma generate```
+```npx prisma generate```
 
 Compilado:
 ```npm run build```
