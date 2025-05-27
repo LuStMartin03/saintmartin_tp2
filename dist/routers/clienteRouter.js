@@ -34,9 +34,9 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
-const UsuarioRouter = (0, express_1.Router)();
-UsuarioRouter.use(express_1.default.json());
-UsuarioRouter.get('/', (_req, res) => {
+const clienteRouter = (0, express_1.Router)();
+clienteRouter.use(express_1.default.json());
+clienteRouter.get('/', (_req, res) => {
     res.send('CLI');
 });
-exports.default = UsuarioRouter;
+exports.default = clienteRouter;

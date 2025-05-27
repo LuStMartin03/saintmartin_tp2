@@ -4,17 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const usuarioRouter_1 = __importDefault(require("./routers/usuarioRouter"));
-// import platosRouter from './routers/platos_routers';
-// import pedidosRouter from './routers/pedidos_routers';
+const clienteRouter_1 = __importDefault(require("./routers/clienteRouter"));
+const adminRouter_1 = __importDefault(require("./routers/adminRouter"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.get('/', (_req, res) => {
-    res.send('API del restaurante funcionando');
+    res.send('API - Restaurante “Lo de Miguel”');
 });
-app.use('/usuarios', usuarioRouter_1.default);
-// app.use('/platos', platosRouter);
-// app.use('/pedidos', pedidosRouter);
+app.use('/cliente', clienteRouter_1.default);
+app.use('/admin', adminRouter_1.default);
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
