@@ -6,7 +6,7 @@ const db = new client_1.PrismaClient();
 class AdminService {
     async getAllAdmins() {
         try {
-            const admins = await db.administrador.findMany();
+            const admins = await db.admin.findMany();
             return admins;
         }
         catch (error) {
@@ -16,7 +16,7 @@ class AdminService {
     }
     async createAdmin(body) {
         try {
-            const admin = await db.administrador.create({
+            const admin = await db.admin.create({
                 data: body,
             });
             return admin;
@@ -29,32 +29,32 @@ class AdminService {
     }
     async loginAdmin(body) {
         try {
-            const admin = await db.administrador.findFirst({
+            const admin = await db.admin.findFirst({
                 where: {
-                    correo: body.correo,
-                    contraseña: body.contraseña
+                    email: body.email,
+                    password: body.password
                 },
             });
             if (!admin) {
-                throw new Error(`No hay ningún administrador con los datos ingrasados.`);
+                throw new Error(`No hay ningún administrador con los datos ingresados.`);
             }
             return admin;
         }
         catch (error) {
-            console.error("Error al crear administrador con los datos:", body);
+            console.error("Error al buscar administrador con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear el administrador.");
+            throw new Error("No se pudo verificar el administrador.");
         }
     }
     async deleteAdmin(id) {
         try {
-            const admin = await db.administrador.findFirst({
+            const admin = await db.admin.findFirst({
                 where: { adminId: id },
             });
             if (!admin) {
                 throw new Error(`No se encontró ningún administrador con ID: ${id}`);
             }
-            const deletedAdmin = await db.administrador.delete({
+            const deletedAdmin = await db.admin.delete({
                 where: { adminId: id },
             });
             return deletedAdmin;
@@ -66,24 +66,24 @@ class AdminService {
     }
     async changePassword(id, body) {
         try {
-            const admin = await db.administrador.findFirst({
+            const admin = await db.admin.findFirst({
                 where: {
                     adminId: id
                 },
             });
             if (!admin) {
-                throw new Error(`No hay ningún administrador con los datos ingrasados.`);
+                throw new Error(`No hay ningún administrador con el ID ingresado.`);
             }
-            const changedAdmin = await db.administrador.update({
+            const changedAdmin = await db.admin.update({
                 where: { adminId: id },
-                data: { contraseña: body.contraseña }
+                data: { password: body.password }
             });
             return changedAdmin;
         }
         catch (error) {
             console.error("Error al cambiar contraseña con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo cambiar contraseña.");
+            throw new Error("No se pudo cambiar la contraseña.");
         }
     }
 }

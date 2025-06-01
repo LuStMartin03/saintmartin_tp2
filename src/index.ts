@@ -1,5 +1,6 @@
 import express from 'express';
 import adminRouter from './routers/adminRouter';
+import clientRouter from './routers/clientRouter';
 import tableRouter from './routers/tableRouter';
 
 const app = express();
@@ -11,6 +12,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/admin', adminRouter);
+app.use('/client', clientRouter);
 app.use('/table', tableRouter);
 
 

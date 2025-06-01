@@ -6,8 +6,8 @@ const db = new client_1.PrismaClient();
 class TableService {
     async getAllTables() {
         try {
-            const mesas = await db.mesa.findMany();
-            return mesas;
+            const tables = await db.table.findMany();
+            return tables;
         }
         catch (error) {
             console.error("Error al obtener las mesas desde la base de datos:", error);
@@ -16,27 +16,27 @@ class TableService {
     }
     async createTable(body) {
         try {
-            const table = await db.mesa.create({
+            const table = await db.table.create({
                 data: body,
             });
             return table;
         }
         catch (error) {
-            console.error("Error al crear administrador con los datos:", body);
+            console.error("Error al crear la mesa con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear el administrador.");
+            throw new Error("No se pudo crear la mesa.");
         }
     }
     async deleteTable(id) {
         try {
-            const table = await db.mesa.findFirst({
-                where: { numeroDeMesa: id },
+            const table = await db.table.findFirst({
+                where: { tableNumber: id },
             });
             if (!table) {
-                throw new Error(`No se encontró ningúna mesa con ID: ${id}`);
+                throw new Error(`No se encontró ninguna mesa con ID: ${id}`);
             }
-            const deletedTable = await db.mesa.delete({
-                where: { numeroDeMesa: id },
+            const deletedTable = await db.table.delete({
+                where: { tableNumber: id },
             });
             return deletedTable;
         }
@@ -47,21 +47,21 @@ class TableService {
     }
     async changeTableStatus(body) {
         try {
-            const table = await db.mesa.findFirst({
-                where: { numeroDeMesa: body.numeroDeMesa },
+            const table = await db.table.findFirst({
+                where: { tableNumber: body.tableNumber },
             });
             if (!table) {
-                throw new Error(`No se encontró ningúna mesa con ID: ${body.numeroDeMesa}`);
+                throw new Error(`No se encontró ninguna mesa con ID: ${body.tableNumber}`);
             }
-            const changedTable = await db.mesa.update({
-                where: { numeroDeMesa: body.numeroDeMesa },
-                data: { estado: body.estado }
+            const changedTable = await db.table.update({
+                where: { tableNumber: body.tableNumber },
+                data: { status: body.status }
             });
             return changedTable;
         }
         catch (error) {
-            console.error(`Error al intentar eliminar la mesa con ID ${body.numeroDeMesa}:`, error);
-            throw new Error(`No se pudo eliminar la mesa con ID ${body.numeroDeMesa}.`);
+            console.error(`Error al intentar cambiar el estado de la mesa con ID ${body.tableNumber}:`, error);
+            throw new Error(`No se pudo cambiar el estado de la mesa con ID ${body.tableNumber}.`);
         }
     }
 }

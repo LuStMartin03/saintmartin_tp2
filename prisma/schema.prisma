@@ -9,7 +9,7 @@ datasource db {
   url      = "file:./bd.sqlite"
 }
 
-model Client {
+model Clients {
   clientId   Int       @id @default(autoincrement())
   name       String
   email      String
@@ -47,7 +47,7 @@ model Order {
   discount          Float   @default(0)
   deliveryAddress   String
 
-  client   Client       @relation(fields: [clientId], references: [clientId])
+  client   Clients       @relation(fields: [clientId], references: [clientId])
   dishes   OrderDish[]
 }
 
@@ -67,6 +67,6 @@ model Booking {
   clientId      Int
   bookingDate   DateTime
 
-  client Client @relation(fields: [clientId], references: [clientId])
+  client Clients @relation(fields: [clientId], references: [clientId])
   table  Table  @relation(fields: [tableNumber], references: [tableNumber])
 }
