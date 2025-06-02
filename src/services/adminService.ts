@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import { generarToken } from '../utils/jwt';
 
 const db = new PrismaClient();
+
 
 interface adminData {
     email: string;
@@ -31,20 +33,21 @@ export class AdminService {
         }
     }
 
-    async loginAdmin(body: adminData) {
+    async loginAdmin(email: string, password: string) {
         try {
             const admin = await db.admin.findFirst({
                 where: {
-                    email: body.email,
-                    password: body.password
+                    email: email,
+                    password: password
                 },
             });
             if (!admin) {
                 throw new Error(`No hay ningún administrador con los datos ingresados.`);
             }
-            return admin;
+            const token = generarToken({ id: admin.adminId, rol: 'cliente' });
+            return { mensaje: 'Login exitoso', token };
         } catch (error) {
-            console.error("Error al buscar administrador con los datos:", body);
+            console.error("Error al buscar administrador con los datos:", {email, password});
             console.error("Detalles del error:", error);
             throw new Error("No se pudo verificar el administrador.");
         }
