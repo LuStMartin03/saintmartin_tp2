@@ -4,9 +4,9 @@ import clientRouter from './routers/clientRouter';
 import tableRouter from './routers/tableRouter';
 import dishRouter from './routers/dishRouter';
 
+
 const app = express();
 app.use(express.json());
-
 
 app.get('/', (_req, res) => {
     res.send('API - Restaurante “Lo de Miguel”');

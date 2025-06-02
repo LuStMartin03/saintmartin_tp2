@@ -16,6 +16,7 @@ class TableService {
     }
     async createTable(body) {
         try {
+            // checkear cuantas mesas hay porque no pueden ser mas de 15
             const table = await db.table.create({
                 data: body,
             });

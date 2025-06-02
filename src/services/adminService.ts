@@ -3,7 +3,6 @@ import { generarToken } from '../utils/jwt';
 
 const db = new PrismaClient();
 
-
 interface adminData {
     email: string;
     password: string;

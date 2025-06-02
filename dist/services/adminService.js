@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const client_1 = require("@prisma/client");
+const jwt_1 = require("../utils/jwt");
 const db = new client_1.PrismaClient();
 class AdminService {
     async getAllAdmins() {
@@ -27,21 +28,22 @@ class AdminService {
             throw new Error("No se pudo crear el administrador.");
         }
     }
-    async loginAdmin(body) {
+    async loginAdmin(email, password) {
         try {
             const admin = await db.admin.findFirst({
                 where: {
-                    email: body.email,
-                    password: body.password
+                    email: email,
+                    password: password
                 },
             });
             if (!admin) {
                 throw new Error(`No hay ningún administrador con los datos ingresados.`);
             }
-            return admin;
+            const token = (0, jwt_1.generarToken)({ id: admin.adminId, rol: 'cliente' });
+            return { mensaje: 'Login exitoso', token };
         }
         catch (error) {
-            console.error("Error al buscar administrador con los datos:", body);
+            console.error("Error al buscar administrador con los datos:", { email, password });
             console.error("Detalles del error:", error);
             throw new Error("No se pudo verificar el administrador.");
         }
