@@ -28,6 +28,7 @@ model Admin {
 
 model Dish {
   dishId     Int     @id @default(autoincrement())
+  name       String
   description String
   price      Float
   category   String

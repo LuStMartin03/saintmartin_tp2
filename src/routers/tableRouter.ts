@@ -24,7 +24,7 @@ tableRouter.post('/create', async (_req, res) => {
     }
 });
 
-tableRouter.post('/change_status', async (_req, res) => {
+tableRouter.patch('/change_status', async (_req, res) => {
     try {
         const tableRequested = _req.body;
         const table = await tableService.changeTableStatus(tableRequested);
