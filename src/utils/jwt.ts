@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const SECRET = 'lo_de_miguelito';
+const SECRET = 'miguelito´s_secret';
 
 export function generarToken(payload: object): string {
     return jwt.sign(payload, SECRET, { expiresIn: '1h' });

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const SECRET = 'lo_de_miguelito';
+const SECRET = 'miguelito´s_secret';
 
 export function autenticar(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
@@ -11,7 +11,6 @@ export function autenticar(req: Request, res: Response, next: NextFunction) {
 
     try {
         const usuario = jwt.verify(token, SECRET);
-        // Guardamos info en la request para usar después
         (req as any).usuario = usuario;
         next();
     } catch (err) {

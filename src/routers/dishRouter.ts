@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { DishService } from '../services/dishService';
 import { changePrice, createDish, deleteDish, getAllDishes } from '../controllers/dishController';
+import { verificarToken } from '../utils/jwt';
+import { soloAdmin } from '../middleware/auth';
 
 const dishRouter = Router();
 
