@@ -51,12 +51,7 @@ class ClientService {
     }
     async deleteClient(id) {
         try {
-            const client = await db.clients.findFirst({
-                where: { clientId: id },
-            });
-            if (!client) {
-                throw new Error(`No se encontró ningún cliente con ID: ${id}`);
-            }
+            await this.verifyClientExists(id);
             const deletedClient = await db.clients.delete({
                 where: { clientId: id },
             });
@@ -69,14 +64,7 @@ class ClientService {
     }
     async changePassword(id, body) {
         try {
-            const client = await db.clients.findFirst({
-                where: {
-                    clientId: id
-                },
-            });
-            if (!client) {
-                throw new Error(`No hay ningún cliente con el ID ingresado.`);
-            }
+            await this.verifyClientExists(id);
             const changedClient = await db.clients.update({
                 where: { clientId: id },
                 data: { password: body.password }
@@ -87,6 +75,45 @@ class ClientService {
             console.error("Error al cambiar contraseña con los datos:", body);
             console.error("Detalles del error:", error);
             throw new Error("No se pudo cambiar la contraseña.");
+        }
+    }
+    async clientAddress(id) {
+        try {
+            await this.verifyClientExists(id);
+            const result = await db.clients.findUnique({
+                where: { clientId: id },
+                select: {
+                    address: true
+                }
+            });
+            if (!result) {
+                throw new Error(`No existe la direccion del usuario: ${id}`);
+            }
+            else {
+                return result.address;
+            }
+        }
+        catch (error) {
+            console.error(`Error al encontrar domicilio del cliente: ${id}`);
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo cambiar la contraseña.");
+        }
+    }
+    async verifyClientExists(id) {
+        try {
+            const client = await db.clients.findFirst({
+                where: {
+                    clientId: id
+                },
+            });
+            if (!client) {
+                throw new Error(`No hay ningún cliente con el ID ingresado.`);
+            }
+        }
+        catch (error) {
+            console.error("Error al verificar cliente.");
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo verificar si el cliente existe.");
         }
     }
 }

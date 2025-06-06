@@ -1,12 +1,28 @@
 import { PrismaClient } from '@prisma/client';
 
+import { ClientService } from '../services/clientService';
+import { DishService } from '../services/dishService';
+
+const clientService = new ClientService();
+const dishService = new DishService();
+
 const db = new PrismaClient();
+
+/*
+    orderId           Int     @id @default(autoincrement())
+    clientId          Int
+    totalAmount       Float
+    discount          Float   @default(0)
+    status            String  @default("en proceso")
+    deliveryAddress   String
+*/
 
 interface orderData {
     clientId: number,
     totalAmount: number,
+    discount: number,
     status: string,
-    deliveryAddress: string
+    dishes: number[]
 }
 
 export class OrderService {
@@ -22,11 +38,34 @@ export class OrderService {
 
     async createOrder(body: orderData) {
         try {
-            // buscar la direccion del cliente en la db
-            const order = await db.order.create({
-                data: body,
+            await clientService.verifyClientExists(body.clientId)
+            const address = await clientService.clientAddress(body.clientId)
+
+            for (let i = 0; i < body.dishes.length; i++) {
+                await dishService.verifyDishExists(body.dishes[i])
+            }
+
+            const newOrder = await db.order.create({
+                data: {
+                    clientId: body.clientId,
+                    totalAmount: body.totalAmount,
+                    discount: body.discount,
+                    status: body.status,
+                    deliveryAddress: address
+                }
             });
-            return order;
+
+            for (let i = 0; i < body.dishes.length; i++) {
+                await dishService.verifyDishExists(body.dishes[i])
+                await db.orderDish.create({
+                data: {
+                    orderId: newOrder.orderId,
+                    dishId: body.dishes[i]
+                }
+                });
+            }
+            return newOrder;
+
         } catch (error) {
             console.error("Error al crear orden con los datos:", body);
             console.error("Detalles del error:", error);

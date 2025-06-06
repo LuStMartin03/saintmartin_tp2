@@ -6,5 +6,5 @@ const tableRouter = (0, express_1.Router)();
 tableRouter.get('/', tableController_1.getAllTables);
 tableRouter.post('/create', tableController_1.createTable);
 tableRouter.patch('/change_status', tableController_1.changeStatus);
-tableRouter.delete('/:id', tableController_1.deleteTable);
+tableRouter.delete('/delete/:id', tableController_1.deleteTable);
 exports.default = tableRouter;

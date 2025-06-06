@@ -4,6 +4,7 @@ import clientRouter from './routers/clientRouter';
 import tableRouter from './routers/tableRouter';
 import dishRouter from './routers/dishRouter';
 import orderRouter from './routers/orderRouter';
+import orderDishRouter from './routers/orderDishRouter';
 
 
 const app = express();
@@ -14,6 +15,7 @@ app.use('/client', clientRouter);
 app.use('/table', tableRouter);
 app.use('/dish', dishRouter);
 app.use('/order', orderRouter);
+app.use('/orderDish', orderDishRouter);
 
 
 const PORT = 3000;

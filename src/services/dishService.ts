@@ -35,13 +35,7 @@ export class DishService {
 
     async deleteDish(id: number) {
         try {
-            const dish = await db.dish.findFirst({
-                where: { dishId: id },
-            });
-
-            if (!dish) {
-                throw new Error(`No se encontró ningún plato con ID: ${id}`);
-            }
+            await this.verifyDishExists(id)
 
             const deletedDish = await db.dish.delete({
                 where: { dishId: id },
@@ -57,13 +51,7 @@ export class DishService {
 
     async changeDishPrice(id: number, price: number) {
         try {
-            const dish = await db.dish.findFirst({
-                where: { dishId: id },
-            });
-
-            if (!dish) {
-                throw new Error(`No se encontró ningun plato con ID: ${id}`);
-            }
+            await this.verifyDishExists(id)
 
             const changedDish = await db.dish.update({
                 where: { dishId: id },
@@ -74,6 +62,23 @@ export class DishService {
         } catch (error) {
             console.error(`Error al intentar cambiar el precio del plato con ID ${id}:`, error);
             throw new Error(`No se pudo cambiar el precio del plato con ID ${id}.`);
+        }
+    }
+
+    async verifyDishExists(id: number) {
+        try {
+            const dish = await db.dish.findFirst({
+                where: {
+                    dishId: id
+                },
+            });
+            if (!dish) {
+                throw new Error(`No hay ningún plato con el ID: ${id}`);
+            }
+        } catch (error) {
+            console.error("Error al verificar plato.");
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo verificar si el plato existe.");
         }
     }
 }
