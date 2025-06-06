@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { generarToken } from '../utils/jwt';
 
 const db = new PrismaClient();
 
@@ -43,8 +42,8 @@ export class AdminService {
             if (!admin) {
                 throw new Error(`No hay ningún administrador con los datos ingresados.`);
             }
-            const token = generarToken({ id: admin.adminId, rol: 'cliente' });
-            return { mensaje: 'Login exitoso', token };
+            // const token = generarToken({ id: admin.adminId, rol: 'cliente' });
+            return { mensaje: 'Login exitoso' };
         } catch (error) {
             console.error("Error al buscar administrador con los datos:", {email, password});
             console.error("Detalles del error:", error);

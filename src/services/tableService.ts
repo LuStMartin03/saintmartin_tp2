@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
 interface tableData {
-    tableNumber: number;
+    tableId: number;
     status: string;
 }
 
@@ -36,7 +36,7 @@ export class TableService {
     async deleteTable(id: number) {
         try {
             const table = await db.table.findFirst({
-                where: { tableNumber: id },
+                where: { tableId: id },
             });
 
             if (!table) {
@@ -44,7 +44,7 @@ export class TableService {
             }
 
             const deletedTable = await db.table.delete({
-                where: { tableNumber: id },
+                where: { tableId: id },
             });
 
             return deletedTable;
@@ -58,22 +58,22 @@ export class TableService {
     async changeTableStatus(body: tableData) {
         try {
             const table = await db.table.findFirst({
-                where: { tableNumber: body.tableNumber },
+                where: { tableId: body.tableId },
             });
 
             if (!table) {
-                throw new Error(`No se encontró ninguna mesa con ID: ${body.tableNumber}`);
+                throw new Error(`No se encontró ninguna mesa con ID: ${body.tableId}`);
             }
 
             const changedTable = await db.table.update({
-                where: { tableNumber: body.tableNumber },
+                where: { tableId: body.tableId },
                 data: { status: body.status }
             });
             return changedTable;
 
         } catch (error) {
-            console.error(`Error al intentar cambiar el estado de la mesa con ID ${body.tableNumber}:`, error);
-            throw new Error(`No se pudo cambiar el estado de la mesa con ID ${body.tableNumber}.`);
+            console.error(`Error al intentar cambiar el estado de la mesa con ID ${body.tableId}:`, error);
+            throw new Error(`No se pudo cambiar el estado de la mesa con ID ${body.tableId}.`);
         }
     }
 }

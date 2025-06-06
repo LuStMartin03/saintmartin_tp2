@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const adminService_1 = require("../services/adminService");
 const adminController_1 = require("../controllers/adminController");
 const adminRouter = (0, express_1.Router)();
-const adminService = new adminService_1.AdminService();
 adminRouter.get('/', adminController_1.getAllAdmins);
 adminRouter.post('/register', adminController_1.register);
 adminRouter.post('/login', adminController_1.login);

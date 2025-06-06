@@ -54,7 +54,7 @@ export class DishService {
             throw new Error(`No se pudo eliminar el plato con ID ${id}.`);
         }
     }
-    
+
     async changeDishPrice(id: number, price: number) {
         try {
             const dish = await db.dish.findFirst({

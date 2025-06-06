@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 const SECRET = 'miguelito´s_secret';
 
-export function autenticar(req: Request, res: Response, next: NextFunction) {
+export function autenticate(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     if (!authHeader) return res.status(401).json({ mensaje: 'Falta token' });
 
@@ -18,14 +18,14 @@ export function autenticar(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function soloAdmin(req: Request, res: Response, next: NextFunction) {
-    const usuario = (req as any).usuario;
-    if (usuario?.rol !== 'admin') return res.status(403).json({ mensaje: 'Acceso denegado' });
+export function onlyAdmin(req: Request, res: Response, next: NextFunction) {
+    const user = (req as any).usuario;
+    if (user?.rol !== 'admin') return res.status(403).json({ mensaje: 'Acceso denegado' });
     next();
 }
 
-export function soloCliente(req: Request, res: Response, next: NextFunction) {
-    const usuario = (req as any).usuario;
-    if (usuario?.rol !== 'cliente') return res.status(403).json({ mensaje: 'Solo clientes pueden acceder' });
+export function onlyClient(req: Request, res: Response, next: NextFunction) {
+    const user = (req as any).usuario;
+    if (user?.rol !== 'cliente') return res.status(403).json({ mensaje: 'Solo clientes pueden acceder' });
     next();
 }
