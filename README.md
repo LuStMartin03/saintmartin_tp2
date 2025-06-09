@@ -16,6 +16,7 @@ Dependencias:
 
 Para prisma:
 ```npx prisma generate```
+```npx prisma db push --force-reset```
 
 Compilado:
 ```npm run build```

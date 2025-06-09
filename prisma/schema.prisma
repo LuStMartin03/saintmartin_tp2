@@ -36,17 +36,18 @@ model Dish {
 }
 
 model Table {
-  tableId Int     @id @default(autoincrement())
-  status      String
+  tableId     Int     @id @default(autoincrement())
+  status      String  @default("disponible")
   bookings    Booking[]
 }
 
 model Order {
-  orderId       Int     @id @default(autoincrement())
+  orderId           Int     @id @default(autoincrement())
   clientId          Int
   totalAmount       Float
-  discount          Float   @default(0)
-  status            String  @default("en proceso")
+  discount          String
+  finalAmount       Float
+  status            String  @default("pendiente")
   deliveryAddress   String
 
   client   Clients       @relation(fields: [clientId], references: [clientId])
@@ -65,7 +66,7 @@ model OrderDish {
 
 model Booking {
   bookingId     Int      @id @default(autoincrement())
-  tableId   Int
+  tableId       Int
   clientId      Int
   bookingDate   DateTime
 

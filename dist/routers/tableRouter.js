@@ -4,6 +4,7 @@ const express_1 = require("express");
 const tableController_1 = require("../controllers/tableController");
 const tableRouter = (0, express_1.Router)();
 tableRouter.get('/', tableController_1.getAllTables);
+tableRouter.get('/see_disponibility', tableController_1.disponibilityTables);
 tableRouter.post('/create', tableController_1.createTable);
 tableRouter.patch('/change_status', tableController_1.changeStatus);
 tableRouter.delete('/delete/:id', tableController_1.deleteTable);

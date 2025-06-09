@@ -41,3 +41,12 @@ export async function changeStatus(_req: Request, res: Response) {
         res.status(500).json({ ok: false, error: error.message });
     }
 }
+
+export async function disponibilityTables(_req: Request, res: Response) {
+    try {
+        const disponibility = await tableService.disponibility();
+        res.status(200).json({ ok: true, data: disponibility });
+    } catch (error: any) {
+        res.status(500).json({ ok: false, error: error.message });
+    }
+}

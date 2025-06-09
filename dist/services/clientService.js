@@ -19,6 +19,22 @@ class ClientService {
             if (!body.password) {
                 throw new Error("No se ingreso la contraseña");
             }
+            const email = await db.clients.findFirst({
+                where: {
+                    email: body.email
+                }
+            });
+            if (!!email) {
+                throw new Error("Email ya registrado");
+            }
+            const phone = await db.clients.findFirst({
+                where: {
+                    phone: body.phone
+                }
+            });
+            if (!!phone) {
+                throw new Error("Telefono ya registrado");
+            }
             const client = await db.clients.create({
                 data: body,
             });
@@ -51,7 +67,7 @@ class ClientService {
     }
     async deleteClient(id) {
         try {
-            await this.verifyClientExists(id);
+            await this.verifyClientExistence(id);
             const deletedClient = await db.clients.delete({
                 where: { clientId: id },
             });
@@ -64,7 +80,7 @@ class ClientService {
     }
     async changePassword(id, body) {
         try {
-            await this.verifyClientExists(id);
+            await this.verifyClientExistence(id);
             const changedClient = await db.clients.update({
                 where: { clientId: id },
                 data: { password: body.password }
@@ -79,7 +95,7 @@ class ClientService {
     }
     async clientAddress(id) {
         try {
-            await this.verifyClientExists(id);
+            await this.verifyClientExistence(id);
             const result = await db.clients.findUnique({
                 where: { clientId: id },
                 select: {
@@ -99,7 +115,7 @@ class ClientService {
             throw new Error("No se pudo cambiar la contraseña.");
         }
     }
-    async verifyClientExists(id) {
+    async verifyClientExistence(id) {
         try {
             const client = await db.clients.findFirst({
                 where: {
@@ -109,6 +125,22 @@ class ClientService {
             if (!client) {
                 throw new Error(`No hay ningún cliente con el ID ingresado.`);
             }
+        }
+        catch (error) {
+            console.error("Error al verificar cliente.");
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo verificar si el cliente existe.");
+        }
+    }
+    async amountOfOrders(id) {
+        try {
+            await this.verifyClientExistence(id);
+            const order = await db.order.count({
+                where: {
+                    clientId: id
+                },
+            });
+            return order;
         }
         catch (error) {
             console.error("Error al verificar cliente.");

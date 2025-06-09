@@ -20,7 +20,11 @@ export class TableService {
 
     async createTable(body: tableData) {
         try {
-            // checkear cuantas mesas hay porque no pueden ser mas de 15
+            const totalMesas = await db.table.count();
+
+            if (totalMesas >= 15) {
+                throw new Error("No se pueden crear más de 15 mesas.");
+            }
             const table = await db.table.create({
                 data: body,
             });
@@ -65,6 +69,12 @@ export class TableService {
                 throw new Error(`No se encontró ninguna mesa con ID: ${body.tableId}`);
             }
 
+            const validStatus = ["reservada", "diponible"];
+
+            if (!body.status || !validStatus.includes(body.status)) {
+                throw new Error("Estado incorrecto, debería ser: pendiente, en cocina o enviado.");
+            }
+
             const changedTable = await db.table.update({
                 where: { tableId: body.tableId },
                 data: { status: body.status }
@@ -74,6 +84,23 @@ export class TableService {
         } catch (error) {
             console.error(`Error al intentar cambiar el estado de la mesa con ID ${body.tableId}:`, error);
             throw new Error(`No se pudo cambiar el estado de la mesa con ID ${body.tableId}.`);
+        }
+    }
+
+    async disponibility() {
+        try {
+            const tables = await db.table.findMany({
+                where: {
+                    status: "disponible"
+                },
+                select: {
+                    tableId: true
+                }
+            });
+            return tables;
+        } catch (error) {
+            console.error(`Error al intentar cambiar el estado de la mesa con ID :`, error);
+            throw new Error(`No se pudo cambiar el estado de la mesa con ID `);
         }
     }
 }

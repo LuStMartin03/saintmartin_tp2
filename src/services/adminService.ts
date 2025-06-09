@@ -3,8 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
 interface adminData {
-    email: string;
-    password: string;
+    email: string,
+    password: string,
+    newPassword?: string,
 }
 
 export class AdminService {
@@ -20,6 +21,19 @@ export class AdminService {
 
     async createAdmin(body: adminData) {
         try {
+            if (!body.password) {
+                throw new Error("No se ingreso la contraseña");
+            }
+
+            const email = await db.admin.findFirst({
+                where: {
+                    email: body.email
+                }
+            })
+            if (!!email) {
+                throw new Error("Email ya registrado");
+            }
+
             const admin = await db.admin.create({
                 data: body,
             });
@@ -73,20 +87,18 @@ export class AdminService {
         }
     }
 
-    async changePassword(id: number, body: adminData) {
+    async changePassword(body: adminData) {
         try {
             const admin = await db.admin.findFirst({
-                where: {
-                    adminId: id
-                },
-            });
+                where: { email: body.email, password: body.password }
+            })
             if (!admin) {
                 throw new Error(`No hay ningún administrador con el ID ingresado.`);
             }
 
             const changedAdmin = await db.admin.update({
-                where: { adminId: id },
-                data: { password: body.password }
+                where: { adminId: admin.adminId },
+                data: { password: body.newPassword }
             });
             return changedAdmin;
 

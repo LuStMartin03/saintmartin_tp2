@@ -19,9 +19,6 @@ const db = new PrismaClient();
 
 interface orderData {
     clientId: number,
-    totalAmount: number,
-    discount: number,
-    status: string,
     dishes: number[]
 }
 
@@ -38,25 +35,24 @@ export class OrderService {
 
     async createOrder(body: orderData) {
         try {
-            await clientService.verifyClientExists(body.clientId)
+            const totalAmount = await this.calculateTotalAmount(body.dishes);
+            const amountOfOrders = await clientService.amountOfOrders(body.clientId);
+            const discount = await this.calculateDiscount(amountOfOrders);
+            const finalAmount = totalAmount - (totalAmount * discount.percentage / 100);
             const address = await clientService.clientAddress(body.clientId)
-
-            for (let i = 0; i < body.dishes.length; i++) {
-                await dishService.verifyDishExists(body.dishes[i])
-            }
 
             const newOrder = await db.order.create({
                 data: {
                     clientId: body.clientId,
-                    totalAmount: body.totalAmount,
-                    discount: body.discount,
-                    status: body.status,
+                    totalAmount: totalAmount,
+                    discount: discount.type,
+                    finalAmount: finalAmount,
                     deliveryAddress: address
                 }
             });
 
             for (let i = 0; i < body.dishes.length; i++) {
-                await dishService.verifyDishExists(body.dishes[i])
+                await dishService.verifyDishExistence(body.dishes[i])
                 await db.orderDish.create({
                 data: {
                     orderId: newOrder.orderId,
@@ -75,13 +71,7 @@ export class OrderService {
 
     async deleteOrder(id: number) {
         try {
-            const order = await db.order.findFirst({
-                where: { orderId: id },
-            });
-
-            if (!order) {
-                throw new Error(`No se encontró ninguna orden con ID: ${id}`);
-            }
+            await this.verifyOrderExistence(id);
 
             const deletedOrder = await db.order.delete({
                 where: { orderId: id },
@@ -97,13 +87,14 @@ export class OrderService {
 
     async changeStatus(id: number, status: string) {
         try {
-            const order = await db.order.findFirst({
-                where: { orderId: id },
-            });
+            await this.verifyOrderExistence(id);
 
-            if (!order) {
-                throw new Error(`No se encontró ningun plato con ID: ${id}`);
+            const validStatus = ["pendiente", "en cocina", "enviado"];
+
+            if (!status || !validStatus.includes(status)) {
+                throw new Error("Estado incorrecto, debería ser: pendiente, en cocina o enviado.");
             }
+
 
             const changedOrder = await db.order.update({
                 where: { orderId: id },
@@ -111,6 +102,57 @@ export class OrderService {
             });
             return changedOrder;
 
+        } catch (error) {
+            console.error(`Error al intentar cambiar el pedido con ID ${id}:`, error);
+            throw new Error(`No se pudo cambiar el estado del pedido con ID ${id}.`);
+        }
+    }
+
+    async calculateTotalAmount(dishes: number[]) {
+        try {
+            let totalAmount = 0
+            for (let i = 0; i < dishes.length; i++) {
+                    const price = await dishService.priceDish(dishes[i]) as number;
+                    totalAmount += price;
+                }
+            return totalAmount;
+        } catch (error) {
+            console.error(`Error al calcular monto total`, error);
+            throw new Error(`No se pudo calcular monto total.`);
+        }
+    }
+
+    async calculateDiscount(amountOfOrders: number): Promise<{ type: string, percentage: number }> {
+        try {
+            const discountRules = [
+                { minOrders: 7, type: "Top Premium", percentage: 50 },
+                { minOrders: 5, type: "Premium", percentage: 20 },
+                { minOrders: 3, type: "Habitue", percentage: 10 },
+            ];
+
+            for (const rule of discountRules) {
+                if (amountOfOrders >= rule.minOrders) {
+                    return { type: rule.type, percentage: rule.percentage };
+                }
+            }
+
+            return { type: "Sin descuento", percentage: 0 };
+        } catch (error) {
+            console.error("Error al crear orden con los datos:");
+            console.error("Detalles del error:", error);
+            throw new Error("No se pudo crear la orden.");
+        }
+    }
+
+    async verifyOrderExistence(id: number) {
+        try {
+            const order = await db.order.findFirst({
+                where: { orderId: id },
+            });
+
+            if (!order) {
+                throw new Error(`No se encontró ningun plato con ID: ${id}`);
+            }
         } catch (error) {
             console.error(`Error al intentar cambiar el pedido con ID ${id}:`, error);
             throw new Error(`No se pudo cambiar el estado del pedido con ID ${id}.`);
