@@ -91,12 +91,17 @@ export class ClientService {
         }
     }
 
-    async changePassword(id: number, body: clientData) {
+    async changePassword(body: clientData) {
         try {
-            await this.verifyClientExistence(id)
+            const client = await db.clients.findFirst({
+                where: { email: body.email, password: body.password }
+            });
+            if (!client) {
+                throw new Error(`No hay ningún administrador con el ID ingresado.`);
+            }
 
             const changedClient = await db.clients.update({
-                where: { clientId: id },
+                where: { clientId: client.clientId },
                 data: { password: body.password }
             });
             return changedClient;

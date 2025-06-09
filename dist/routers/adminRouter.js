@@ -7,5 +7,5 @@ adminRouter.get('/', adminController_1.getAllAdmins);
 adminRouter.post('/register', adminController_1.register);
 adminRouter.post('/login', adminController_1.login);
 adminRouter.delete('/:id', adminController_1.deleteAdmin);
-adminRouter.patch('/change_password/:id', adminController_1.changePassword);
+adminRouter.patch('/change_password', adminController_1.changePassword);
 exports.default = adminRouter;

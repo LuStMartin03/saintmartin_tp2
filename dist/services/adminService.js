@@ -76,19 +76,17 @@ class AdminService {
             throw new Error(`No se pudo eliminar el administrador con ID ${id}.`);
         }
     }
-    async changePassword(id, body) {
+    async changePassword(body) {
         try {
             const admin = await db.admin.findFirst({
-                where: {
-                    adminId: id
-                },
+                where: { email: body.email, password: body.password }
             });
             if (!admin) {
                 throw new Error(`No hay ningún administrador con el ID ingresado.`);
             }
             const changedAdmin = await db.admin.update({
-                where: { adminId: id },
-                data: { password: body.password }
+                where: { adminId: admin.adminId },
+                data: { password: body.newPassword }
             });
             return changedAdmin;
         }

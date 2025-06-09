@@ -51,14 +51,14 @@ export class DishService {
 
     async changeDishPrice(id: number, price: number) {
         try {
-            await this.verifyDishExistence(id)
+            await this.verifyDishExistence(id);
 
             const changedDish = await db.dish.update({
                 where: { dishId: id },
                 data: { price: price }
             });
-            return changedDish;
 
+            return changedDish;
         } catch (error) {
             console.error(`Error al intentar cambiar el precio del plato con ID ${id}:`, error);
             throw new Error(`No se pudo cambiar el precio del plato con ID ${id}.`);

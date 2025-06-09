@@ -45,9 +45,8 @@ export async function deleteClient(_req: Request, res: Response) {
 
 export async function changePassword(_req: Request, res: Response) {
     try {
-        const clientIdToGet = parseInt(_req.params.id);
         const clientData = _req.body;
-        const client = await clientService.changePassword(clientIdToGet, clientData);
+        const client = await clientService.changePassword(clientData);
         res.status(200).json({ ok: true, data: client });
     } catch (error: any) {
         res.status(500).json({ ok: false, error: error.message });

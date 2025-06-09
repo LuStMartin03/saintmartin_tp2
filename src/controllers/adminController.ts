@@ -45,9 +45,8 @@ export async function deleteAdmin(_req: Request, res: Response) {
 
 export async function changePassword(_req: Request, res: Response) {
     try {
-        const adminIdToGet = parseInt(_req.params.id);
         const adminData = _req.body;
-        const admin = await adminService.changePassword(adminIdToGet, adminData);
+        const admin = await adminService.changePassword(adminData);
         res.status(200).json({ ok: true, data: admin });
     } catch (error: any) {
         res.status(500).json({ ok: false, error: error.message });

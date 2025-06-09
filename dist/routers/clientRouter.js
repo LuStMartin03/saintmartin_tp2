@@ -7,5 +7,5 @@ clientRouter.get('/', clientController_1.getAllClients);
 clientRouter.post('/register', clientController_1.register);
 clientRouter.post('/login', clientController_1.login);
 clientRouter.delete('/:id', clientController_1.deleteClient);
-clientRouter.patch('/change_password/:id', clientController_1.changePassword);
+clientRouter.patch('/change_password', clientController_1.changePassword);
 exports.default = clientRouter;
