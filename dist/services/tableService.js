@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TableService = void 0;
 const client_1 = require("@prisma/client");
+const BaseError_1 = require("../errors/BaseError");
 const db = new client_1.PrismaClient();
 class TableService {
     async getAllTables() {
@@ -10,15 +11,17 @@ class TableService {
             return tables;
         }
         catch (error) {
-            console.error("Error al obtener las mesas desde la base de datos:", error);
-            throw new Error("No se pudieron obtener las mesas.");
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al obtener mesas desde la base de datos.");
         }
     }
     async createTable(body) {
         try {
             const totalMesas = await db.table.count();
             if (totalMesas >= 15) {
-                throw new Error("No se pueden crear más de 15 mesas.");
+                throw new BaseError_1.BadRequestError("No se pueden crear más de 15 mesas.");
             }
             const table = await db.table.create({
                 data: body,
@@ -26,9 +29,10 @@ class TableService {
             return table;
         }
         catch (error) {
-            console.error("Error al crear la mesa con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear la mesa.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al crear mesa.");
         }
     }
     async deleteTable(id) {
@@ -37,7 +41,7 @@ class TableService {
                 where: { tableId: id },
             });
             if (!table) {
-                throw new Error(`No se encontró ninguna mesa con ID: ${id}`);
+                throw new BaseError_1.NotFoundError(`No se encontró ninguna mesa con ID: ${id}`);
             }
             const deletedTable = await db.table.delete({
                 where: { tableId: id },
@@ -45,8 +49,10 @@ class TableService {
             return deletedTable;
         }
         catch (error) {
-            console.error(`Error al intentar eliminar la mesa con ID ${id}:`, error);
-            throw new Error(`No se pudo eliminar la mesa con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al eliminar mesa.");
         }
     }
     async changeTableStatus(body) {
@@ -55,11 +61,11 @@ class TableService {
                 where: { tableId: body.tableId },
             });
             if (!table) {
-                throw new Error(`No se encontró ninguna mesa con ID: ${body.tableId}`);
+                throw new BaseError_1.NotFoundError(`No se encontró ninguna mesa con ID: ${body.tableId}`);
             }
-            const validStatus = ["reservada", "diponible"];
+            const validStatus = ["reservada", "disponible"];
             if (!body.status || !validStatus.includes(body.status)) {
-                throw new Error("Estado incorrecto, debería ser: pendiente, en cocina o enviado.");
+                throw new BaseError_1.BadRequestError("Estado incorrecto, debería ser: reservada o disponible.");
             }
             const changedTable = await db.table.update({
                 where: { tableId: body.tableId },
@@ -68,8 +74,10 @@ class TableService {
             return changedTable;
         }
         catch (error) {
-            console.error(`Error al intentar cambiar el estado de la mesa con ID ${body.tableId}:`, error);
-            throw new Error(`No se pudo cambiar el estado de la mesa con ID ${body.tableId}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al cambiar estado de la mesa.");
         }
     }
     async disponibility() {
@@ -85,8 +93,10 @@ class TableService {
             return tables;
         }
         catch (error) {
-            console.error(`Error al intentar cambiar el estado de la mesa con ID :`, error);
-            throw new Error(`No se pudo cambiar el estado de la mesa con ID `);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al obtener mesas disponibles desde la base de datos.");
         }
     }
 }

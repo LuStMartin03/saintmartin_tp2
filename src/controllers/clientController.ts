@@ -8,7 +8,8 @@ export async function getAllClients(_req: Request, res: Response) {
         const clients = await clientService.getAllClients();
         res.status(200).json({ ok: true, data: clients });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -18,7 +19,8 @@ export async function register(_req: Request, res: Response) {
         const client = await clientService.createClient(clientRequested);
         res.status(200).json({ ok: true, data: client });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -29,7 +31,8 @@ export async function login(_req: Request, res: Response) {
         const client = await clientService.loginClient(clientEmailRequested, clientPasswordRequested);
         res.status(200).json({ ok: true, data: client });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -39,7 +42,8 @@ export async function deleteClient(_req: Request, res: Response) {
         const client = await clientService.deleteClient(clientIdToGet);
         res.status(200).json({ ok: true, data: client });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -49,6 +53,7 @@ export async function changePassword(_req: Request, res: Response) {
         const client = await clientService.changePassword(clientData);
         res.status(200).json({ ok: true, data: client });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }

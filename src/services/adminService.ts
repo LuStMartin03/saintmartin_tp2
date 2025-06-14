@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
 
 const db = new PrismaClient();
 
@@ -12,17 +13,17 @@ export class AdminService {
     async getAllAdmins() {
         try {
             const admins = await db.admin.findMany();
-            return admins;
+            return { mensaje: "Admins obtenidos con éxito", data: admins };
         } catch (error) {
             console.error("Error al obtener administradores desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los administradores.");
+            throw new InternalServerError("Error interno al obtener administradores.");
         }
     }
 
     async createAdmin(body: adminData) {
         try {
             if (!body.password) {
-                throw new Error("No se ingreso la contraseña.");
+                throw new BadRequestError("No se ingresó la contraseña.");
             }
 
             const email = await db.admin.findFirst({
@@ -30,18 +31,21 @@ export class AdminService {
                     email: body.email
                 }
             })
-            if (!!email) {
-                throw new Error("Email ya registrado");
+            if (email) {
+                throw new ConflictError("El email ya está registrado.");
             }
 
             const admin = await db.admin.create({
                 data: body,
             });
-            return admin;
+            return { mensaje: "Admin creado con éxito", data: admin };
+
         } catch (error) {
-            console.error("Error al crear administrador con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear el administrador.");
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new InternalServerError("Ocurrió un error inesperado al registrar el administrador.");
         }
     }
 
@@ -54,14 +58,17 @@ export class AdminService {
                 },
             });
             if (!admin) {
-                throw new Error(`No hay ningún administrador con los datos ingresados.`);
+                throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
             // const token = generarToken({ id: admin.adminId, rol: 'cliente' });
-            return { mensaje: 'Login exitoso' };
+            return { mensaje: "Login exitoso", data: admin }; // desp sacar admin cuando haga token
+
         } catch (error) {
-            console.error("Error al buscar administrador con los datos:", {email, password});
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar el administrador.");
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new InternalServerError("Ocurrió un error inesperado al hacer login.");
         }
     }
 
@@ -72,18 +79,21 @@ export class AdminService {
             });
 
             if (!admin) {
-                throw new Error(`No se encontró ningún administrador con ID: ${id}`);
+                throw new NotFoundError(`No se encontró ningún administrador con ID: ${id}`);
             }
 
             const deletedAdmin = await db.admin.delete({
                 where: { adminId: id },
             });
 
-            return deletedAdmin;
+            return { mensaje: "Admin eliminado con éxito", data: deletedAdmin };
 
         } catch (error) {
-            console.error(`Error al intentar eliminar el administrador con ID ${id}:`, error);
-            throw new Error(`No se pudo eliminar el administrador con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new InternalServerError("Ocurrió un error inesperado al eliminar administrador.");
         }
     }
 
@@ -93,19 +103,21 @@ export class AdminService {
                 where: { email: body.email, password: body.password }
             })
             if (!admin) {
-                throw new Error(`No hay ningún administrador con el ID ingresado.`);
+                throw new NotFoundError("No hay ningún administrador con los datos ingresados.");
             }
 
             const changedAdmin = await db.admin.update({
                 where: { adminId: admin.adminId },
                 data: { password: body.newPassword }
             });
-            return changedAdmin;
+            return { mensaje: "Contraseña cambiada con éxito", data: changedAdmin };
 
         } catch (error) {
-            console.error("Error al cambiar contraseña con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo cambiar la contraseña.");
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new InternalServerError("Ocurrió un error inesperado al cambiar contraseña del administrador.");
         }
     }
 }

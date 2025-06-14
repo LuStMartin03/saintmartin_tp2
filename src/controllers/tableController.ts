@@ -8,7 +8,8 @@ export async function getAllTables(_req: Request, res: Response) {
         const tables = await tableService.getAllTables();
         res.status(200).json({ ok: true, data: tables });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -18,7 +19,8 @@ export async function createTable(_req: Request, res: Response) {
         const table = await tableService.createTable(tableRequested);
         res.status(200).json({ ok: true, data: table });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -28,7 +30,8 @@ export async function deleteTable(_req: Request, res: Response) {
         const table = await tableService.deleteTable(tableIdToGet);
         res.status(200).json({ ok: true, data: table });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -38,7 +41,8 @@ export async function changeStatus(_req: Request, res: Response) {
         const table = await tableService.changeTableStatus(tableRequested);
         res.status(200).json({ ok: true, data: table });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -47,6 +51,7 @@ export async function disponibilityTables(_req: Request, res: Response) {
         const disponibility = await tableService.disponibility();
         res.status(200).json({ ok: true, data: disponibility });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }

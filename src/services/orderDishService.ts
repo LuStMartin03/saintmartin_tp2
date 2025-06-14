@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { InternalServerError, BaseError } from '../errors/BaseError';
 
 import { DishService } from '../services/dishService';
 const dishService = new DishService();
@@ -12,8 +13,9 @@ export class OrderDishService {
             const orderDish = await db.orderDish.findMany();
             return orderDish;
         } catch (error) {
-            console.error("Error al obtener ordenes desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los ordenes.");
+                    console.error("Detalles del error:", error);
+                    if (error instanceof BaseError) throw error;
+                    throw new InternalServerError("Ocurrió un error inesperado al obtener pedidos-platos desde la base de datos.");
         }
     }
 
@@ -50,8 +52,9 @@ export class OrderDishService {
 
             return createdOrderDishes;
         } catch (error) {
-            console.error("Error al obtener ordenes desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los ordenes.");
+                    console.error("Detalles del error:", error);
+                    if (error instanceof BaseError) throw error;
+                    throw new InternalServerError("Ocurrió un error inesperado al registrar los platos del pedido.");
         }
     }
 }

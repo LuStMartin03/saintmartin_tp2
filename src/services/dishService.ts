@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
 
 const db = new PrismaClient();
 
@@ -15,8 +16,9 @@ export class DishService {
             const dishes = await db.dish.findMany();
             return dishes;
         } catch (error) {
-            console.error("Error al obtener platos desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los platos.");
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al obtener platos de la base de datos.");
         }
     }
 
@@ -27,9 +29,9 @@ export class DishService {
             });
             return dish;
         } catch (error) {
-            console.error("Error al crear plato con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear el plato.");
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al crear plato.");
         }
     }
 
@@ -44,8 +46,9 @@ export class DishService {
             return deletedDish;
 
         } catch (error) {
-            console.error(`Error al intentar eliminar el plato con ID ${id}:`, error);
-            throw new Error(`No se pudo eliminar el plato con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al eliminar plato.");
         }
     }
 
@@ -60,8 +63,9 @@ export class DishService {
 
             return changedDish;
         } catch (error) {
-            console.error(`Error al intentar cambiar el precio del plato con ID ${id}:`, error);
-            throw new Error(`No se pudo cambiar el precio del plato con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al cambiar precio del plato.");
         }
     }
 
@@ -73,12 +77,12 @@ export class DishService {
                 },
             });
             if (!dish) {
-                throw new Error(`No hay ningún plato con el ID: ${id}`);
+                throw new NotFoundError(`No hay ningún plato con el ID: ${id}`);
             }
         } catch (error) {
-            console.error("Error al verificar plato.");
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar si el plato existe.");
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al verificar existencia del plato.");
         }
     }
 
@@ -96,9 +100,9 @@ export class DishService {
         return dishPrice?.price;
 
         } catch (error) {
-            console.error("Error al verificar plato.");
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar si el plato existe.");
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al obtener el precio del plato.");
         }
     }
 }

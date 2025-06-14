@@ -8,7 +8,8 @@ export async function getAllDishes(_req: Request, res: Response) {
         const dishes = await dishService.getAllDishes();
         res.status(200).json({ ok: true, data: dishes });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -18,7 +19,8 @@ export async function createDish(_req: Request, res: Response) {
         const dish = await dishService.createDish(dishRequested);
         res.status(200).json({ ok: true, data: dish });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -28,7 +30,8 @@ export async function deleteDish(_req: Request, res: Response) {
         const dish = await dishService.deleteDish(dishIdToGet);
         res.status(200).json({ ok: true, data: dish });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
 
@@ -39,6 +42,7 @@ export async function changePrice(_req: Request, res: Response) {
         const dish = await dishService.changeDishPrice(dishIdToGet, dishPriceRequested);
         res.status(200).json({ ok: true, data: dish });
     } catch (error: any) {
-        res.status(500).json({ ok: false, error: error.message });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
     }
 }

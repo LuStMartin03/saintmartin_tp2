@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
 
 import { ClientService } from '../services/clientService';
 import { DishService } from '../services/dishService';
@@ -30,8 +31,9 @@ export class OrderService {
             const orders = await db.order.findMany();
             return orders;
         } catch (error) {
-            console.error("Error al obtener ordenes desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los ordenes.");
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al obtener pedido desde la base de datos.");
         }
     }
 
@@ -55,18 +57,13 @@ export class OrderService {
                 }
             });
 
-
-            // recorrer lista de ids de platos
-            // verificar existencia de plato
-            // crear orderDish (orderId - dishId - qty)
-
             await orderDishService.createOrderDish(body.dishes, newOrder.orderId);
             return newOrder;
 
         } catch (error) {
-            console.error("Error al crear orden con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear la orden.");
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al crear pedido.");
         }
     }
 
@@ -81,8 +78,9 @@ export class OrderService {
             return deletedOrder;
 
         } catch (error) {
-            console.error(`Error al intentar eliminar la orden con ID ${id}:`, error);
-            throw new Error(`No se pudo eliminar la orden con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al eliminar pedido.");
         }
     }
 
@@ -93,7 +91,7 @@ export class OrderService {
             const validStatus = ["pendiente", "en cocina", "enviado"];
 
             if (!status || !validStatus.includes(status)) {
-                throw new Error("Estado incorrecto, debería ser: pendiente, en cocina o enviado.");
+                throw new BadRequestError("Estado incorrecto, debería ser: pendiente, en cocina o enviado.");
             }
 
 
@@ -104,8 +102,9 @@ export class OrderService {
             return changedOrder;
 
         } catch (error) {
-            console.error(`Error al intentar cambiar el pedido con ID ${id}:`, error);
-            throw new Error(`No se pudo cambiar el estado del pedido con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al cambiar estado de la orden.");
         }
     }
 
@@ -118,8 +117,9 @@ export class OrderService {
                 }
             return totalAmount;
         } catch (error) {
-            console.error(`Error al calcular monto total`, error);
-            throw new Error(`No se pudo calcular monto total.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al calcular precio total del pedido.");
         }
     }
 
@@ -139,9 +139,9 @@ export class OrderService {
 
             return { type: "Sin descuento", percentage: 0 };
         } catch (error) {
-            console.error("Error al crear orden con los datos:");
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear la orden.");
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al calcular descuento.");
         }
     }
 
@@ -152,11 +152,12 @@ export class OrderService {
             });
 
             if (!order) {
-                throw new Error(`No se encontró ningun plato con ID: ${id}`);
+                throw new NotFoundError(`No se encontró ningun pedido con ID: ${id}`);
             }
         } catch (error) {
-            console.error(`Error al intentar cambiar el pedido con ID ${id}:`, error);
-            throw new Error(`No se pudo cambiar el estado del pedido con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al verificar existencia del pedido.");
         }
     }
 }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientService = void 0;
 const client_1 = require("@prisma/client");
+const BaseError_1 = require("../errors/BaseError");
 const db = new client_1.PrismaClient();
 class ClientService {
     async getAllClients() {
@@ -10,30 +11,32 @@ class ClientService {
             return clients;
         }
         catch (error) {
-            console.error("Error al obtener clientes desde la base de datos:", error);
-            throw new Error("No se pudieron obtener los clientes.");
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al obtener clientes desde la base de datos.");
         }
     }
     async createClient(body) {
         try {
             if (!body.password) {
-                throw new Error("No se ingreso la contraseña");
+                throw new BaseError_1.BadRequestError("No se ingresó la contraseña.");
             }
             const email = await db.clients.findFirst({
                 where: {
                     email: body.email
                 }
             });
-            if (!!email) {
-                throw new Error("Email ya registrado");
+            if (email) {
+                throw new BaseError_1.ConflictError("El email ya está registrado.");
             }
             const phone = await db.clients.findFirst({
                 where: {
                     phone: body.phone
                 }
             });
-            if (!!phone) {
-                throw new Error("Telefono ya registrado");
+            if (phone) {
+                throw new BaseError_1.ConflictError("El teléfono ya está registrado.");
             }
             const client = await db.clients.create({
                 data: body,
@@ -41,9 +44,10 @@ class ClientService {
             return client;
         }
         catch (error) {
-            console.error("Error al crear cliente con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo crear el cliente.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al registrar el cliente.");
         }
     }
     async loginClient(email, password) {
@@ -55,14 +59,16 @@ class ClientService {
                 },
             });
             if (!client) {
-                throw new Error(`No hay ningún cliente con los datos ingresados.`);
+                throw new BaseError_1.NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
-            return client;
+            // generar token
+            return { mensaje: 'Login exitoso' };
         }
         catch (error) {
-            console.error("Error al buscar cliente con mail: ", email, " y contraseña: ", password);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar el cliente.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al verificar el cliente.");
         }
     }
     async deleteClient(id) {
@@ -74,8 +80,10 @@ class ClientService {
             return deletedClient;
         }
         catch (error) {
-            console.error(`Error al intentar eliminar el cliente con ID ${id}:`, error);
-            throw new Error(`No se pudo eliminar el cliente con ID ${id}.`);
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al eliminar al cliente.");
         }
     }
     async changePassword(body) {
@@ -84,18 +92,20 @@ class ClientService {
                 where: { email: body.email, password: body.password }
             });
             if (!client) {
-                throw new Error(`No hay ningún administrador con el ID ingresado.`);
+                throw new BaseError_1.NotFoundError("No hay ningún cliente con los datos ingresados.");
             }
             const changedClient = await db.clients.update({
                 where: { clientId: client.clientId },
                 data: { password: body.password }
+                // new password
             });
             return changedClient;
         }
         catch (error) {
-            console.error("Error al cambiar contraseña con los datos:", body);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo cambiar la contraseña.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al cambiar la contraseña.");
         }
     }
     async clientAddress(id) {
@@ -108,16 +118,17 @@ class ClientService {
                 }
             });
             if (!result) {
-                throw new Error(`No existe la direccion del usuario: ${id}`);
+                throw new BaseError_1.NotFoundError(`No existe la direccion del usuario: ${id}`);
             }
             else {
                 return result.address;
             }
         }
         catch (error) {
-            console.error(`Error al encontrar domicilio del cliente: ${id}`);
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo cambiar la contraseña.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al obtener la dirección del usuario.");
         }
     }
     async verifyClientExistence(id) {
@@ -128,13 +139,14 @@ class ClientService {
                 },
             });
             if (!client) {
-                throw new Error(`No hay ningún cliente con el ID ingresado.`);
+                throw new BaseError_1.NotFoundError(`No se encontró ninguna orden con ID: ${id}`);
             }
         }
         catch (error) {
-            console.error("Error al verificar cliente.");
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar si el cliente existe.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al verificar la existencia del cliente.");
         }
     }
     async amountOfOrders(id) {
@@ -148,9 +160,10 @@ class ClientService {
             return order;
         }
         catch (error) {
-            console.error("Error al verificar cliente.");
             console.error("Detalles del error:", error);
-            throw new Error("No se pudo verificar si el cliente existe.");
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al contar las ordenes pasadas del cliente");
         }
     }
 }
