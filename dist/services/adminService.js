@@ -17,7 +17,7 @@ class AdminService {
     async createAdmin(body) {
         try {
             if (!body.password) {
-                throw new Error("No se ingreso la contraseña");
+                throw new Error("No se ingreso la contraseña.");
             }
             const email = await db.admin.findFirst({
                 where: {

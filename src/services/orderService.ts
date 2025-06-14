@@ -2,9 +2,11 @@ import { PrismaClient } from '@prisma/client';
 
 import { ClientService } from '../services/clientService';
 import { DishService } from '../services/dishService';
+import { OrderDishService } from '../services/orderDishService';
 
 const clientService = new ClientService();
 const dishService = new DishService();
+const orderDishService = new OrderDishService();
 
 const db = new PrismaClient();
 
@@ -35,11 +37,13 @@ export class OrderService {
 
     async createOrder(body: orderData) {
         try {
+            // para clalcular el descuento:
             const totalAmount = await this.calculateTotalAmount(body.dishes);
             const amountOfOrders = await clientService.amountOfOrders(body.clientId);
             const discount = await this.calculateDiscount(amountOfOrders);
             const finalAmount = totalAmount - (totalAmount * discount.percentage / 100);
-            const address = await clientService.clientAddress(body.clientId)
+
+            const address = await clientService.clientAddress(body.clientId);
 
             const newOrder = await db.order.create({
                 data: {
@@ -51,15 +55,12 @@ export class OrderService {
                 }
             });
 
-            for (let i = 0; i < body.dishes.length; i++) {
-                await dishService.verifyDishExistence(body.dishes[i])
-                await db.orderDish.create({
-                data: {
-                    orderId: newOrder.orderId,
-                    dishId: body.dishes[i]
-                }
-                });
-            }
+
+            // recorrer lista de ids de platos
+            // verificar existencia de plato
+            // crear orderDish (orderId - dishId - qty)
+
+            await orderDishService.createOrderDish(body.dishes, newOrder.orderId);
             return newOrder;
 
         } catch (error) {
