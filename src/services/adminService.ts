@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
+import { generarToken } from '../utils/jwt';
 
 const db = new PrismaClient();
 
@@ -60,8 +61,8 @@ export class AdminService {
             if (!admin) {
                 throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
-            // const token = generarToken({ id: admin.adminId, rol: 'cliente' });
-            return { mensaje: "Login exitoso", data: admin }; // desp sacar admin cuando haga token
+            const token = generarToken({ id: admin.adminId, rol: 'admin' });
+            return { mensaje: "Login exitoso", token };
 
         } catch (error) {
             console.error("Detalles del error:", error);

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
+import { generarToken } from '../utils/jwt';
 
 const db = new PrismaClient();
 
@@ -9,6 +10,7 @@ interface clientData {
     phone: number;
     password: string;
     address: string;
+    newPassword?: string;
 }
 
 export class ClientService {
@@ -69,8 +71,8 @@ export class ClientService {
             if (!client) {
                 throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
-            // generar token y sacar data del return
-            return { mensaje: "Login exitoso", data: client };
+            const token = generarToken({ id: client.clientId, rol: 'client' });
+            return { mensaje: "Login exitoso", token };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -107,8 +109,7 @@ export class ClientService {
 
             const changedClient = await db.clients.update({
                 where: { clientId: client.clientId },
-                data: { password: body.password }
-                // new password
+                data: { password: body.newPassword }
             });
             return { mensaje: "Contraseña cambiada con éxito", data: changedClient };
 

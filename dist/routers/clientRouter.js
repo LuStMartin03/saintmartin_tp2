@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const clientController_1 = require("../controllers/clientController");
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const clientRouter = (0, express_1.Router)();
-clientRouter.get('/', clientController_1.getAllClients);
+clientRouter.get('/', (0, authMiddleware_1.autenticarRol)('admin'), clientController_1.getAllClients);
 clientRouter.post('/register', clientController_1.register);
 clientRouter.post('/login', clientController_1.login);
-clientRouter.delete('/:id', clientController_1.deleteClient);
-clientRouter.patch('/change_password', clientController_1.changePassword);
+clientRouter.delete('/:id', (0, authMiddleware_1.autenticarRol)('admin'), (0, authMiddleware_1.autenticarRol)('client'), clientController_1.deleteClient);
+clientRouter.patch('/change_password', (0, authMiddleware_1.autenticarRol)('client'), clientController_1.changePassword);
 exports.default = clientRouter;

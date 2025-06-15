@@ -15,7 +15,7 @@ export class BadRequestError extends BaseError {
         super(message, 400);
     }
 }
-/* 
+
 // ejemplo: usuario no autenticado (login sin token válido)
 export class UnauthorizedError extends BaseError {
     constructor(message: string) {
@@ -28,7 +28,7 @@ export class ForbiddenError extends BaseError {
     constructor(message: string) {
         super(message, 403);
     }
-} */
+}
 
 // ejemplo: recurso no encontrado (como admin inexistente)
 export class NotFoundError extends BaseError {
@@ -43,7 +43,7 @@ export class ConflictError extends BaseError {
         super(message, 409);
     }
 }
-/* 
+/* Ni pongo este
 // ejemplo: datos válidos pero imposibles de procesar (validación compleja)
 export class UnprocessableEntityError extends BaseError {
     constructor(message: string) {

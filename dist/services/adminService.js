@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const client_1 = require("@prisma/client");
 const BaseError_1 = require("../errors/BaseError");
+const jwt_1 = require("../utils/jwt");
 const db = new client_1.PrismaClient();
 class AdminService {
     async getAllAdmins() {
         try {
             const admins = await db.admin.findMany();
-            return admins;
+            return { mensaje: "Admins obtenidos con éxito", data: admins };
         }
         catch (error) {
             console.error("Error al obtener administradores desde la base de datos:", error);
@@ -31,7 +32,7 @@ class AdminService {
             const admin = await db.admin.create({
                 data: body,
             });
-            return admin;
+            return { mensaje: "Admin creado con éxito", data: admin };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -52,8 +53,8 @@ class AdminService {
             if (!admin) {
                 throw new BaseError_1.NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
-            // const token = generarToken({ id: admin.adminId, rol: 'cliente' });
-            return { mensaje: 'Login exitoso' };
+            const token = (0, jwt_1.generarToken)({ id: admin.adminId, rol: 'admin' });
+            return { mensaje: "Login exitoso", token };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -74,7 +75,7 @@ class AdminService {
             const deletedAdmin = await db.admin.delete({
                 where: { adminId: id },
             });
-            return deletedAdmin;
+            return { mensaje: "Admin eliminado con éxito", data: deletedAdmin };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -96,7 +97,7 @@ class AdminService {
                 where: { adminId: admin.adminId },
                 data: { password: body.newPassword }
             });
-            return changedAdmin;
+            return { mensaje: "Contraseña cambiada con éxito", data: changedAdmin };
         }
         catch (error) {
             console.error("Detalles del error:", error);

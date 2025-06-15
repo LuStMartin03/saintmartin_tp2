@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientService = void 0;
 const client_1 = require("@prisma/client");
 const BaseError_1 = require("../errors/BaseError");
+const jwt_1 = require("../utils/jwt");
 const db = new client_1.PrismaClient();
 class ClientService {
     async getAllClients() {
         try {
             const clients = await db.clients.findMany();
-            return clients;
+            return { mensaje: "Clientes obtenidos con éxito", data: clients };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -41,7 +42,7 @@ class ClientService {
             const client = await db.clients.create({
                 data: body,
             });
-            return client;
+            return { mensaje: "Cliente creado con éxito", data: client };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -61,8 +62,8 @@ class ClientService {
             if (!client) {
                 throw new BaseError_1.NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
-            // generar token
-            return { mensaje: 'Login exitoso' };
+            const token = (0, jwt_1.generarToken)({ id: client.clientId, rol: 'client' });
+            return { mensaje: "Login exitoso", token };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -77,7 +78,7 @@ class ClientService {
             const deletedClient = await db.clients.delete({
                 where: { clientId: id },
             });
-            return deletedClient;
+            return { mensaje: "Cliente eliminado con éxito", data: deletedClient };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -96,10 +97,9 @@ class ClientService {
             }
             const changedClient = await db.clients.update({
                 where: { clientId: client.clientId },
-                data: { password: body.password }
-                // new password
+                data: { password: body.newPassword }
             });
-            return changedClient;
+            return { mensaje: "Contraseña cambiada con éxito", data: changedClient };
         }
         catch (error) {
             console.error("Detalles del error:", error);
@@ -120,9 +120,7 @@ class ClientService {
             if (!result) {
                 throw new BaseError_1.NotFoundError(`No existe la direccion del usuario: ${id}`);
             }
-            else {
-                return result.address;
-            }
+            return result.address;
         }
         catch (error) {
             console.error("Detalles del error:", error);
