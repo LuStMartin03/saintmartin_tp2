@@ -7,6 +7,7 @@ const tableRouter = (0, express_1.Router)();
 tableRouter.get('/', (0, authMiddleware_1.autenticarRol)('admin'), tableController_1.getAllTables);
 tableRouter.get('/see_disponibility', (0, authMiddleware_1.autenticarRol)('admin'), (0, authMiddleware_1.autenticarRol)('client'), tableController_1.disponibilityTables);
 tableRouter.post('/create', (0, authMiddleware_1.autenticarRol)('admin'), tableController_1.createTable);
+tableRouter.patch('/bookTable', (0, authMiddleware_1.autenticarRol)('client'), tableController_1.bookTable);
 tableRouter.patch('/change_status', (0, authMiddleware_1.autenticarRol)('admin'), tableController_1.changeStatus);
 tableRouter.delete('/delete/:id', (0, authMiddleware_1.autenticarRol)('admin'), tableController_1.deleteTable);
 exports.default = tableRouter;

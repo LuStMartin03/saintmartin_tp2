@@ -55,3 +55,14 @@ export async function disponibilityTables(_req: Request, res: Response) {
         res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
+
+export async function bookTable(_req: Request, res: Response) {
+    try {
+        const tableRequested = _req.body;
+        const table = await tableService.bookTable(tableRequested);
+        res.status(200).json({ ok: true, data: table });
+    } catch (error: any) {
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
+    }
+}

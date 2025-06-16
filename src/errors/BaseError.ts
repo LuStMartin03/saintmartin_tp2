@@ -43,13 +43,6 @@ export class ConflictError extends BaseError {
         super(message, 409);
     }
 }
-/* Ni pongo este
-// ejemplo: datos válidos pero imposibles de procesar (validación compleja)
-export class UnprocessableEntityError extends BaseError {
-    constructor(message: string) {
-        super(message, 422);
-    }
-} */
 
 // ejemplo: error inesperado del servidor (para usar en catch generales)
 export class InternalServerError extends BaseError {

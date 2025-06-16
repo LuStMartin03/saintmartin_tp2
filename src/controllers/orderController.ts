@@ -46,3 +46,14 @@ export async function changeStatus(_req: Request, res: Response) {
         res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
+
+export async function seeStatus(_req: Request, res: Response) {
+    try {
+        const orderIdRequested = parseInt(_req.params.id);
+        const order = await orderService.seeStatus(orderIdRequested);
+        res.status(200).json({ ok: true, data: order });
+    } catch (error: any) {
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ ok: false, error: error.message });
+    }
+}

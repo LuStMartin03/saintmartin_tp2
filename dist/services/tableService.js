@@ -57,12 +57,7 @@ class TableService {
     }
     async changeTableStatus(body) {
         try {
-            const table = await db.table.findFirst({
-                where: { tableId: body.tableId },
-            });
-            if (!table) {
-                throw new BaseError_1.NotFoundError(`No se encontró ninguna mesa con ID: ${body.tableId}`);
-            }
+            await this.verifyTableExistance;
             const validStatus = ["reservada", "disponible"];
             if (!body.status || !validStatus.includes(body.status)) {
                 throw new BaseError_1.BadRequestError("Estado incorrecto, debería ser: reservada o disponible.");
@@ -97,6 +92,42 @@ class TableService {
             if (error instanceof BaseError_1.BaseError)
                 throw error;
             throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al obtener mesas disponibles desde la base de datos.");
+        }
+    }
+    async bookTable(body) {
+        try {
+            await this.verifyTableExistance;
+            const tables = await db.table.update({
+                where: {
+                    tableId: body.tableId
+                },
+                data: {
+                    status: "reservada"
+                }
+            });
+            return { message: "Mesa reservada con éxito.", data: tables };
+        }
+        catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al reservar mesa.");
+        }
+    }
+    async verifyTableExistance(id) {
+        try {
+            const table = await db.table.findFirst({
+                where: { tableId: id },
+            });
+            if (!table) {
+                throw new BaseError_1.NotFoundError(`No se encontró ninguna mesa con ID: ${id}`);
+            }
+        }
+        catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError_1.BaseError)
+                throw error;
+            throw new BaseError_1.InternalServerError("Ocurrió un error inesperado al verificar existencia de la mesa.");
         }
     }
 }

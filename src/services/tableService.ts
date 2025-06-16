@@ -6,7 +6,7 @@ const db = new PrismaClient();
 
 interface tableData {
     tableId: number;
-    status: string;
+    status?: string;
 }
 
 export class TableService {
@@ -64,14 +64,8 @@ export class TableService {
     }
 
     async changeTableStatus(body: tableData) {
-        try {
-            const table = await db.table.findFirst({
-                where: { tableId: body.tableId },
-            });
-
-            if (!table) {
-                throw new NotFoundError(`No se encontró ninguna mesa con ID: ${body.tableId}`);
-            }
+        try {            
+            await this.verifyTableExistance;
 
             const validStatus = ["reservada", "disponible"];
 
@@ -107,6 +101,42 @@ export class TableService {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
             throw new InternalServerError("Ocurrió un error inesperado al obtener mesas disponibles desde la base de datos.");
+        }
+    }
+
+    async bookTable(body: tableData) {
+        try {
+            await this.verifyTableExistance;
+            const tables = await db.table.update({
+                where: {
+                    tableId: body.tableId
+                },
+                data: {
+                    status: "reservada"
+                }
+            });
+            return { message: "Mesa reservada con éxito.", data: tables };
+
+        } catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al reservar mesa.");
+        }
+    }
+
+    async verifyTableExistance(id: number) {
+        try {
+            const table = await db.table.findFirst({
+                    where: { tableId: id },
+                });
+
+                if (!table) {
+                    throw new NotFoundError(`No se encontró ninguna mesa con ID: ${id}`);
+                }
+        } catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al verificar existencia de la mesa.");
         }
     }
 }

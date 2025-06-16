@@ -7,6 +7,7 @@ const adminRouter = (0, express_1.Router)();
 adminRouter.get('/', (0, authMiddleware_1.autenticarRol)('admin'), adminController_1.getAllAdmins);
 adminRouter.post('/register', adminController_1.register);
 adminRouter.post('/login', adminController_1.login);
+// VERIFICAR QUE EL ADMIN QUE ESTA CAMBIANDO ESTE SE EL ID CORRECTO
 adminRouter.delete('/:id', (0, authMiddleware_1.autenticarRol)('admin'), adminController_1.deleteAdmin);
 adminRouter.patch('/change_password', (0, authMiddleware_1.autenticarRol)('admin'), adminController_1.changePassword);
 exports.default = adminRouter;

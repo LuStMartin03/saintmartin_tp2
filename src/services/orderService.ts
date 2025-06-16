@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { BadRequestError, NotFoundError, ConflictError, InternalServerError, BaseError } from '../errors/BaseError';
+import { BadRequestError, NotFoundError, InternalServerError, BaseError } from '../errors/BaseError';
 
 import { ClientService } from '../services/clientService';
 import { DishService } from '../services/dishService';
@@ -154,6 +154,27 @@ export class OrderService {
             if (!order) {
                 throw new NotFoundError(`No se encontró ningun pedido con ID: ${id}`);
             }
+        } catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al verificar existencia del pedido.");
+        }
+    }
+
+    async seeStatus(id: number) {
+        try {
+            await this.verifyOrderExistence(id);
+            const status = await db.order.findFirst({
+                where: {
+                    orderId: id
+                },
+                select: {
+                    status: true
+                }
+            });
+            if (!status) throw new NotFoundError(`No se encontro el estado de la mesa con ID: ${id}`);  
+            return status?.status
+
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;

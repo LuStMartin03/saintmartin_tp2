@@ -16,7 +16,7 @@ app.use(express_1.default.json());
 app.use('/admin', adminRouter_1.default);
 app.use('/client', clientRouter_1.default);
 app.use('/table', tableRouter_1.default);
-app.use('/dish', dishRouter_1.default);
+app.use('/menu', dishRouter_1.default);
 app.use('/order', orderRouter_1.default);
 app.use('/orderDish', orderDishRouter_1.default);
 app.use(errorHandler_1.errorHandler);
