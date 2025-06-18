@@ -15,7 +15,7 @@ interface reservationData {
 export class ReservationService {
     async getAllReservations() {
         try {
-            const reservations = await db.resevation.findMany();
+            const reservations = await db.reservation.findMany();
             return { mensaje: "Reservaciones obtenidas con éxito", data: reservations };
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -32,7 +32,7 @@ export class ReservationService {
             }
             await clientService.verifyClientExistence(body.clientId);
 
-            const reservationClient = await db.resevation.count({
+            const reservationClient = await db.reservation.count({
                 where: { clientId: body.clientId }
             });
 
@@ -40,7 +40,7 @@ export class ReservationService {
                 throw new ConflictError(`El cliente ${body.clientId} ya tiene una mesa reservada.`);
             }
 
-            const reservation = await db.resevation.create({
+            const reservation = await db.reservation.create({
                 data: {
                     tableId: body.tableId,
                     clientId: body.clientId
@@ -64,14 +64,14 @@ export class ReservationService {
             if (disponibility == "disponible") {
                 throw new ConflictError(`La mesa ${id} ya esta disponible.`);
             }
-            const reservation = await db.resevation.findFirst({
+            const reservation = await db.reservation.findFirst({
                 where: {
                     tableId: id
                 }
             });
             if (!reservation) throw new NotFoundError("No se encontro la reserva a eliminar");
             
-            const deletedReservation = await db.resevation.delete({
+            const deletedReservation = await db.reservation.delete({
                 where: {
                     reservationId: reservation.reservationId
                 }
