@@ -4,6 +4,7 @@ import clientRouter from './routers/clientRouter';
 import tableRouter from './routers/tableRouter';
 import dishRouter from './routers/dishRouter';
 import orderRouter from './routers/orderRouter';
+import reservationRouter from './routers/reservationRouter';
 import orderDishRouter from './routers/orderDishRouter';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -16,6 +17,7 @@ app.use('/client', clientRouter);
 app.use('/table', tableRouter);
 app.use('/menu', dishRouter);
 app.use('/order', orderRouter);
+app.use('/reservation', reservationRouter);
 app.use('/orderDish', orderDishRouter);
 app.use(errorHandler);
 
