@@ -40,6 +40,23 @@ export class TableService {
         }
     }
 
+    async changeTableStatus(id: number, status: string) {
+        try {            
+            await this.verifyTableExistance;
+
+            const changedTable = await db.table.update({
+                where: { tableId: id },
+                data: { status: status }
+            });
+            return { mensaje: "Estado de mesa cambiado con éxito", data: changedTable };
+
+        } catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al cambiar estado de la mesa.");
+        }
+    }
+
     async deleteTable(id: number) {
         try {
             const table = await db.table.findFirst({
@@ -63,29 +80,6 @@ export class TableService {
         }
     }
 
-    async changeTableStatus(body: tableData) {
-        try {            
-            await this.verifyTableExistance;
-
-            const validStatus = ["reservada", "disponible"];
-
-            if (!body.status || !validStatus.includes(body.status)) {
-                throw new BadRequestError("Estado incorrecto, debería ser: reservada o disponible.");
-            }
-
-            const changedTable = await db.table.update({
-                where: { tableId: body.tableId },
-                data: { status: body.status }
-            });
-            return { mensaje: "Estado de mesa cambiado con éxito", data: changedTable };
-
-        } catch (error) {
-            console.error("Detalles del error:", error);
-            if (error instanceof BaseError) throw error;
-            throw new InternalServerError("Ocurrió un error inesperado al cambiar estado de la mesa.");
-        }
-    }
-
     async disponibility() {
         try {
             const tables = await db.table.findMany({
@@ -104,26 +98,6 @@ export class TableService {
         }
     }
 
-    async bookTable(body: tableData) {
-        try {
-            await this.verifyTableExistance;
-            const tables = await db.table.update({
-                where: {
-                    tableId: body.tableId
-                },
-                data: {
-                    status: "reservada"
-                }
-            });
-            return { message: "Mesa reservada con éxito.", data: tables };
-
-        } catch (error) {
-            console.error("Detalles del error:", error);
-            if (error instanceof BaseError) throw error;
-            throw new InternalServerError("Ocurrió un error inesperado al reservar mesa.");
-        }
-    }
-
     async verifyTableExistance(id: number) {
         try {
             const table = await db.table.findFirst({
@@ -137,6 +111,25 @@ export class TableService {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
             throw new InternalServerError("Ocurrió un error inesperado al verificar existencia de la mesa.");
+        }
+    }
+
+    async verifyTableDisponibility(id: number) {
+        try {
+            await this.verifyTableExistance(id);
+            const disponibility = await db.table.findFirst({
+                where: {
+                    tableId: id
+                },
+                select: {
+                    status: true
+                }
+            });
+            return disponibility?.status;
+        } catch (error) {
+            console.error("Detalles del error:", error);
+            if (error instanceof BaseError) throw error;
+            throw new InternalServerError("Ocurrió un error inesperado al verificar disponibilad de la mesa.");
         }
     }
 }

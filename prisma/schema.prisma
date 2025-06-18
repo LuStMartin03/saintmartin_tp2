@@ -17,7 +17,7 @@ model Clients {
   password   String
   address    String
   orders     Order[]
-  bookings   Booking[]
+  reservation Reservation[]
 }
 
 model Admin {
@@ -38,7 +38,7 @@ model Dish {
 model Table {
   tableId     Int     @id @default(autoincrement())
   status      String  @default("disponible")
-  bookings    Booking[]
+  reservation Reservation[]
 }
 
 model Order {
@@ -65,12 +65,12 @@ model OrderDish {
   @@id([orderId, dishId])
 }
 
-model Booking {
-  bookingId     Int      @id @default(autoincrement())
+model Reservation {
+  reservationId       Int     @id @default(autoincrement())  
   tableId       Int
   clientId      Int
-  bookingDate   DateTime
+  /* bookingDate   DateTime */
 
-  client Clients @relation(fields: [clientId], references: [clientId])
   table  Table  @relation(fields: [tableId], references: [tableId])
+  client Clients @relation(fields: [clientId], references: [clientId])
 }
