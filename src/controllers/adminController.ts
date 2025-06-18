@@ -46,14 +46,3 @@ export async function deleteAdmin(_req: Request, res: Response) {
         res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
-
-export async function changePassword(_req: Request, res: Response) {
-    try {
-        const adminData = _req.body;
-        const admin = await adminService.changePassword(adminData);
-        res.status(200).json({ ok: true, data: admin });
-    } catch (error: any) {
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({ ok: false, error: error.message });
-    }
-}

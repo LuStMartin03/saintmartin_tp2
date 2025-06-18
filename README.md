@@ -10,20 +10,32 @@ Branch a evaluar: main
 
 ---
 
-## Comandos utililes
+## Comandos para compilar codigo fuente:
 
-Dependencias:
+Primero instalar las dependencias:
 ```npm install```
 
-Para prisma:
+Para prisma: // ver
 ```npx prisma generate```
-```npx prisma db push --force-reset```
+```npx prisma db push --force-reset``` // no necesario
 
-Compilado:
+Luego, compilar el codigo:
 ```npm run build```
 
-Ejecutar con node:
+Finalmente ejecutar con node:
 ```node dist/index.js```
 
-Compilar y ejecutar al mismo tiempo:
+
+Compilar y ejecutar al mismo tiempo (más facil):
 ```npm run build && node dist/index.js```
+
+## Decisiones de diseño y otras cosas:
+
+1. El proyecto esta hecho con TypeScript (JavaScript) como lo indica la consigna.
+2. La dependencias que utiliza son: Express, Prisma ORM, etc. // completar
+3. Esta estructurado con routers, controllers y services.
+4. El proceso de autenticacion esta hecho con JSON Web Tokens.
+5. Los errores se manejan con una clase principal BaseError y sus subclases que devuelven distintos codigos de error dependiendo del mismo.
+
+## Rutas:
+// completar

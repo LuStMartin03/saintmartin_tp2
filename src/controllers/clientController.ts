@@ -46,14 +46,3 @@ export async function deleteClient(_req: Request, res: Response) {
         res.status(statusCode).json({ ok: false, error: error.message });
     }
 }
-
-export async function changePassword(_req: Request, res: Response) {
-    try {
-        const clientData = _req.body;
-        const client = await clientService.changePassword(clientData);
-        res.status(200).json({ ok: true, data: client });
-    } catch (error: any) {
-        const statusCode = error.statusCode || 500;
-        res.status(statusCode).json({ ok: false, error: error.message });
-    }
-}

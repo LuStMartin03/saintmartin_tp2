@@ -98,27 +98,4 @@ export class AdminService {
         }
     }
 
-    async changePassword(body: adminData) {
-        try {
-            const admin = await db.admin.findFirst({
-                where: { email: body.email, password: body.password }
-            })
-            if (!admin) {
-                throw new NotFoundError("No hay ningún administrador con los datos ingresados.");
-            }
-
-            const changedAdmin = await db.admin.update({
-                where: { adminId: admin.adminId },
-                data: { password: body.newPassword }
-            });
-            return { mensaje: "Contraseña cambiada con éxito", data: changedAdmin };
-
-        } catch (error) {
-            console.error("Detalles del error:", error);
-            if (error instanceof BaseError) {
-                throw error;
-            }
-            throw new InternalServerError("Ocurrió un error inesperado al cambiar contraseña del administrador.");
-        }
-    }
 }

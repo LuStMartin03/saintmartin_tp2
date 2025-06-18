@@ -98,28 +98,6 @@ export class ClientService {
         }
     }
 
-    async changePassword(body: clientData) {
-        try {
-            const client = await db.clients.findFirst({
-                where: { email: body.email, password: body.password }
-            });
-            if (!client) {
-                throw new NotFoundError("No hay ningún cliente con los datos ingresados.");
-            }
-
-            const changedClient = await db.clients.update({
-                where: { clientId: client.clientId },
-                data: { password: body.newPassword }
-            });
-            return { mensaje: "Contraseña cambiada con éxito", data: changedClient };
-
-        } catch (error) {
-            console.error("Detalles del error:", error);
-            if (error instanceof BaseError) throw error;
-            throw new InternalServerError("Ocurrió un error inesperado al cambiar la contraseña.");
-        }
-    }
-
     async clientAddress(id: number) {
         try {
             await this.verifyClientExistence(id)
