@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { OrderDishService } from '../services/orderDishService';
-import { autenticarRol } from '../middleware/authMiddleware';
+import { authenticateRol } from '../middleware/authMiddleware';
 
 const orderDishRouter = Router();
 const orderService = new OrderDishService();
 
-orderDishRouter.get('/', autenticarRol('admin'), async (_req: Request, res: Response) => {
+orderDishRouter.get('/', authenticateRol('admin'), async (_req: Request, res: Response) => {
     try {
         const orderDish = await orderService.getAllOrderDish();
         res.status(200).json({ ok: true, data: orderDish });

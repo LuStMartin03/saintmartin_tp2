@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { getAllOrders, deleteOrder, createOrder, changeStatus, seeStatus } from '../controllers/orderController';
-import { autenticarRol } from '../middleware/authMiddleware';
+import { authenticateRol } from '../middleware/authMiddleware';
 
 const orderRouter = Router();
 
-orderRouter.get('/', autenticarRol('admin'), getAllOrders);
-orderRouter.post('/create', autenticarRol('client'), createOrder);
-orderRouter.delete('/delete/:id', autenticarRol('admin'), deleteOrder);
+orderRouter.get('/', authenticateRol('admin'), getAllOrders);
+orderRouter.post('/create', authenticateRol('client'), createOrder);
+orderRouter.delete('/delete/:id', authenticateRol('admin'), deleteOrder);
 /* orderRouter.patch('/change_status', autenticarRol('admin'), changeStatus); */
-orderRouter.patch('/see_status/:id', autenticarRol('admin'), autenticarRol('client'), seeStatus);
+orderRouter.patch('/see_status/:id', authenticateRol('anyUser'), seeStatus);
 
 export default orderRouter;

@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { getAllAdmins, login, register, deleteAdmin } from '../controllers/adminController';
-import { autenticarRol } from '../middleware/authMiddleware';
+import { authenticateRol } from '../middleware/authMiddleware';
 
 const adminRouter = Router();
 
-adminRouter.get('/', autenticarRol('admin'), getAllAdmins);
+adminRouter.get('/', authenticateRol('admin'), getAllAdmins);
 adminRouter.post('/register', register);
 adminRouter.post('/login', login);
 
 // VERIFICAR QUE EL ADMIN QUE ESTA CAMBIANDO ESTE SE EL ID CORRECTO
-adminRouter.delete('/:id', autenticarRol('admin'), deleteAdmin);
+adminRouter.delete('/:id', authenticateRol('admin'), deleteAdmin);
 
 export default adminRouter;

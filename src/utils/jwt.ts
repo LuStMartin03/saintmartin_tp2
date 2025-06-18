@@ -7,13 +7,13 @@ interface JwtPayload {
     rol: string;
 }
 
-export function generarToken(payload: JwtPayload) {
+export function generateToken(payload: JwtPayload) {
     const opciones: SignOptions = { expiresIn: '15m'}
     return jwt.sign(payload, SECRET_KEY, opciones);
 }
 
 
-export function verificarToken(token: string) {
+export function verifyToken(token: string) {
     try {
         return jwt.verify(token, SECRET_KEY);
     } catch (error) {
