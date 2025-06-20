@@ -13,7 +13,7 @@ export class TableService {
     async getAllTables() {
         try {
             const tables = await db.table.findMany();
-            return { mensaje: "Mesas obtenidas con éxito", data: tables };
+            return { message: "Mesas obtenidas con éxito", data: tables };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -31,7 +31,7 @@ export class TableService {
             const table = await db.table.create({
                 data: body,
             });
-            return { mensaje: "Mesa creada con éxito", data: table };
+            return { message: "Mesa creada con éxito", data: table };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -48,7 +48,7 @@ export class TableService {
                 where: { tableId: id },
                 data: { status: status }
             });
-            return { mensaje: "Estado de mesa cambiado con éxito", data: changedTable };
+            return { message: "Estado de mesa cambiado con éxito", data: changedTable };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -71,7 +71,7 @@ export class TableService {
                 where: { tableId: id },
             });
 
-            return { mensaje: "Mesa eliminada con éxito", data: deletedTable };
+            return { message: "Mesa eliminada con éxito", data: deletedTable };
 
         } catch (error) {
             console.error("Detalles del error:", error);

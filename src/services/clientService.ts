@@ -17,7 +17,7 @@ export class ClientService {
     async getAllClients() {
         try {
             const clients = await db.clients.findMany();
-            return { mensaje: "Clientes obtenidos con éxito", data: clients };
+            return { message: "Clientes obtenidos con éxito", data: clients };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -52,7 +52,7 @@ export class ClientService {
             const client = await db.clients.create({
                 data: body,
             });
-            return { mensaje: "Cliente registrado con éxito", data: client };
+            return { message: "Cliente registrado con éxito", data: client };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -69,10 +69,10 @@ export class ClientService {
                 },
             });
             if (!client) {
-                throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
+                throw new NotFoundError(`No se encontró ningún cliente con los datos ingresados`);
             }
             const token = generateToken({ id: client.clientId, rol: 'client' });
-            return { mensaje: "Login exitoso", data: token };
+            return { message: "Login exitoso", data: token };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -89,7 +89,7 @@ export class ClientService {
                 where: { clientId: id },
             });
 
-            return { mensaje: "Cliente eliminado con éxito", data: deletedClient };
+            return { message: "Cliente eliminado con éxito", data: deletedClient };
 
         } catch (error) {
             console.error("Detalles del error:", error);          
@@ -125,7 +125,7 @@ export class ClientService {
                 },
             });
             if (!client) {
-                throw new NotFoundError(`No se encontró ninguna orden con ID: ${id}`);
+                throw new NotFoundError(`No se encontró ningun cliente con ID: ${id}`);
             }
         } catch (error) {
             console.error("Detalles del error:", error);

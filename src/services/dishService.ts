@@ -14,7 +14,7 @@ export class DishService {
     async getAllDishes() {
         try {
             const menu = await db.dish.findMany();
-            return { mensaje: "menú obtenido con éxito", data: menu };
+            return { message: "menú obtenido con éxito", data: menu };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;

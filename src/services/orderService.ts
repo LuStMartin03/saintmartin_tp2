@@ -29,7 +29,7 @@ export class OrderService {
     async getAllOrders() {
         try {
             const orders = await db.order.findMany();
-            return {message: "Pedidos obtenidos con éxito", datat: orders};
+            return {message: "Pedidos obtenidos con éxito", data: orders};
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -71,8 +71,12 @@ export class OrderService {
         try {
             await this.verifyOrderExistence(id);
 
+            await db.orderDish.deleteMany({
+                where: { orderId: id }
+            });
+
             const deletedOrder = await db.order.delete({
-                where: { orderId: id },
+                where: { orderId: id }
             });
 
             return {message: "Pedido eliminado con éxito", data: deletedOrder};
@@ -99,7 +103,7 @@ export class OrderService {
                 where: { orderId: id },
                 data: { status: status }
             });
-            return changedOrder;
+            return {message: "Estado cambiado con éxito", data: changedOrder};
 
         } catch (error) {
             console.error("Detalles del error:", error);

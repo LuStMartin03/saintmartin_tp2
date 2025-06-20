@@ -55,7 +55,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Admins obtenidos con éxito",
+  "message": "Admins obtenidos con éxito",
   "data": [admins]
 }
 ```
@@ -79,7 +79,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Admin registrado con éxito",
+  "message": "Admin registrado con éxito",
   "data": {admin}
 }
 ```
@@ -103,7 +103,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Login exitoso",
+  "message": "Login exitoso",
   "data": { "token": "..." }
 }
 ```
@@ -121,7 +121,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Admin eliminado con éxito",
+  "message": "Admin eliminado con éxito",
   "data": {deletedAdmin}
 }
 ```
@@ -138,7 +138,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Clientes obtenidos con éxito",
+  "message": "Clientes obtenidos con éxito",
   "data": [clients]
 }
 ```
@@ -165,7 +165,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Cliente registrado con éxito",
+  "message": "Cliente registrado con éxito",
   "data": {client}
 }
 ```
@@ -189,7 +189,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Login exitoso",
+  "message": "Login exitoso",
   "data": { "token": "..." }
 }
 ```
@@ -205,7 +205,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Cliente eliminado con éxito",
+  "message": "Cliente eliminado con éxito",
   "data": {deletedClient}
 }
 ```
@@ -223,7 +223,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Menú obtenido con éxito",
+  "message": "Menú obtenido con éxito",
   "data": [menu]
 }
 ```
@@ -249,7 +249,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Plato creado con éxito",
+  "message": "Plato creado con éxito",
   "data": {dish}
 }
 ```
@@ -272,7 +272,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Precio cambiado con éxito",
+  "message": "Precio cambiado con éxito",
   "data": {changedDish}
 }
 ```
@@ -288,7 +288,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Plato eliminado con éxito",
+  "message": "Plato eliminado con éxito",
   "data": {deletedDish}
 }
 ```
@@ -305,7 +305,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Pedidos obtenidos con éxito",
+  "message": "Pedidos obtenidos con éxito",
   "data": [orders]
 }
 ```
@@ -320,7 +320,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Estado obtenido con éxito",
+  "message": "Estado obtenido con éxito",
   "data": "string"
 }
 ```
@@ -344,7 +344,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Pedido creado con éxito",
+  "message": "Pedido creado con éxito",
   "data": {newOrder}
 }
 ```
@@ -368,7 +368,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Pedido eliminado con éxito",
+  "message": "Pedido eliminado con éxito",
   "data": {deletedOrder}
 }
 ```
@@ -383,7 +383,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Datos obtenidos con éxito",
+  "message": "Datos obtenidos con éxito",
   "data": [orderDish]
 }
 ```
@@ -400,7 +400,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Reservaciones obtenidas con éxito",
+  "message": "Reservaciones obtenidas con éxito",
   "data": [reservations]
 }
 ```
@@ -416,7 +416,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Reservación creada con éxito",
+  "message": "Reservación creada con éxito",
   "data": {reservation}
 }
 ```
@@ -432,7 +432,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Reserva eliminada con éxito",
+  "message": "Reserva eliminada con éxito",
   "data": {deletedReservation}
 }
 ```
@@ -450,7 +450,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Mesas obtenidas con éxito",
+  "message": "Mesas obtenidas con éxito",
   "data": [tables]
 }
 ```
@@ -466,7 +466,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Mesas disponibles obtenidas con éxito",
+  "message": "Mesas disponibles obtenidas con éxito",
   "data": [tables]
 }
 ```
@@ -490,7 +490,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Mesa creada con éxito",
+  "message": "Mesa creada con éxito",
   "data": {table}
 }
 ```
@@ -514,7 +514,7 @@ Branch a evaluar: main
 
 ```json
 {
-  "mensaje": "Mesa eliminada con éxito",
+  "message": "Mesa eliminada con éxito",
   "data": {deletedTable}
 }
 ```

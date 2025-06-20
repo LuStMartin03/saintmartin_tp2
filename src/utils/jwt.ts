@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'clave_secreta';
+const SECRET_KEY = process.env.JWT_SECRET || 'lo_de_miguel_clave';
 
 interface JwtPayload {
     id: number;
@@ -8,7 +8,7 @@ interface JwtPayload {
 }
 
 export function generateToken(payload: JwtPayload) {
-    const opciones: SignOptions = { expiresIn: '15m'}
+    const opciones: SignOptions = { expiresIn: '15h'}
     return jwt.sign(payload, SECRET_KEY, opciones);
 }
 

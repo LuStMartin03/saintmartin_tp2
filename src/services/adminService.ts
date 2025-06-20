@@ -14,7 +14,7 @@ export class AdminService {
     async getAllAdmins() {
         try {
             const admins = await db.admin.findMany();
-            return { mensaje: "Admins obtenidos con éxito", data: admins };
+            return { message: "Admins obtenidos con éxito", data: admins };
         } catch (error) {
             console.error("Error al obtener administradores desde la base de datos:", error);
             throw new InternalServerError("Error interno al obtener administradores.");
@@ -39,7 +39,7 @@ export class AdminService {
             const admin = await db.admin.create({
                 data: body,
             });
-            return { mensaje: "Admin registrado con éxito", data: admin };
+            return { message: "Admin registrado con éxito", data: admin };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -62,7 +62,7 @@ export class AdminService {
                 throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
             const token = generateToken({ id: admin.adminId, rol: 'admin' });
-            return { mensaje: "Login exitoso", data: token };
+            return { message: "Login exitoso", data: token };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -87,7 +87,7 @@ export class AdminService {
                 where: { adminId: id },
             });
 
-            return { mensaje: "Admin eliminado con éxito", data: deletedAdmin };
+            return { message: "Admin eliminado con éxito", data: deletedAdmin };
 
         } catch (error) {
             console.error("Detalles del error:", error);

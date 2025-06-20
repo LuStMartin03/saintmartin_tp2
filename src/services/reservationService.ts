@@ -16,7 +16,7 @@ export class ReservationService {
     async getAllReservations() {
         try {
             const reservations = await db.reservation.findMany();
-            return { mensaje: "Reservaciones obtenidas con éxito", data: reservations };
+            return { message: "Reservaciones obtenidas con éxito", data: reservations };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;

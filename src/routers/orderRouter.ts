@@ -7,7 +7,7 @@ const orderRouter = Router();
 orderRouter.get('/', authenticateRol('admin'), getAllOrders);
 orderRouter.get('/seeStatus/:id', authenticateRol('anyUser'), seeStatus);
 orderRouter.post('/createOrder', authenticateRol('client'), createOrder);
+orderRouter.patch('/changeStatus/:id', authenticateRol('admin'), changeStatus);
 orderRouter.delete('/:id', authenticateRol('admin'), deleteOrder);
-orderRouter.patch('/changeStatus', authenticateRol('admin'), changeStatus);
 
 export default orderRouter;
