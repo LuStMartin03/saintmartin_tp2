@@ -13,8 +13,8 @@ interface dishData {
 export class DishService {
     async getAllDishes() {
         try {
-            const dishes = await db.dish.findMany();
-            return dishes;
+            const menu = await db.dish.findMany();
+            return { mensaje: "menú obtenido con éxito", data: menu };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -27,7 +27,7 @@ export class DishService {
             const dish = await db.dish.create({
                 data: body,
             });
-            return dish;
+            return {message: "Plato creado con éxito", data: dish};
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -43,7 +43,7 @@ export class DishService {
                 where: { dishId: id },
             });
 
-            return deletedDish;
+            return {message: "Plato eliminado con éxito", data: deletedDish};
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -61,7 +61,7 @@ export class DishService {
                 data: { price: price }
             });
 
-            return changedDish;
+            return {message: "Precio cambiado con éxito", data: changedDish};
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;

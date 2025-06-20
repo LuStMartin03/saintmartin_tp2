@@ -11,7 +11,7 @@ export class OrderDishService {
     async getAllOrderDish() {
         try {
             const orderDish = await db.orderDish.findMany();
-            return orderDish;
+            return {message: "Datos obtenidos con éxito", data: orderDish};
         } catch (error) {
                     console.error("Detalles del error:", error);
                     if (error instanceof BaseError) throw error;

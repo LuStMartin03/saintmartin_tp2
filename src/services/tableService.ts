@@ -90,7 +90,7 @@ export class TableService {
                     tableId: true
                 }
             });
-            return { data: tables };
+            return { message: "Mesas disponibles obtenidas con éxito", data: tables };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;

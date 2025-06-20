@@ -15,9 +15,9 @@ app.use(express.json());
 app.use('/admin', adminRouter);
 app.use('/client', clientRouter);
 app.use('/table', tableRouter);
+app.use('/reservation', reservationRouter);
 app.use('/menu', dishRouter);
 app.use('/order', orderRouter);
-app.use('/reservation', reservationRouter);
 app.use('/orderDish', orderDishRouter);
 app.use(errorHandler);
 

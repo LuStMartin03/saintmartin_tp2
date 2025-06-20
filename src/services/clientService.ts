@@ -52,7 +52,7 @@ export class ClientService {
             const client = await db.clients.create({
                 data: body,
             });
-            return { mensaje: "Cliente creado con éxito", data: client };
+            return { mensaje: "Cliente registrado con éxito", data: client };
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -72,7 +72,7 @@ export class ClientService {
                 throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
             const token = generateToken({ id: client.clientId, rol: 'client' });
-            return { mensaje: "Login exitoso", token };
+            return { mensaje: "Login exitoso", data: token };
 
         } catch (error) {
             console.error("Detalles del error:", error);

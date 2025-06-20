@@ -29,7 +29,7 @@ export class OrderService {
     async getAllOrders() {
         try {
             const orders = await db.order.findMany();
-            return orders;
+            return {message: "Pedidos obtenidos con éxito", datat: orders};
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
@@ -58,7 +58,7 @@ export class OrderService {
             });
 
             await orderDishService.createOrderDish(body.dishes, newOrder.orderId);
-            return newOrder;
+            return {message: "Pedido creado con éxito", data: newOrder};
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -75,7 +75,7 @@ export class OrderService {
                 where: { orderId: id },
             });
 
-            return deletedOrder;
+            return {message: "Pedido eliminado con éxito", data: deletedOrder};
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -173,7 +173,7 @@ export class OrderService {
                 }
             });
             if (!status) throw new NotFoundError(`No se encontro el estado de la mesa con ID: ${id}`);  
-            return status?.status
+            return {message: "Estado obtenido con éxito", data: status?.status};
 
         } catch (error) {
             console.error("Detalles del error:", error);

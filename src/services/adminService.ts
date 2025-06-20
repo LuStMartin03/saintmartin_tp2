@@ -39,7 +39,7 @@ export class AdminService {
             const admin = await db.admin.create({
                 data: body,
             });
-            return { mensaje: "Admin creado con éxito", data: admin };
+            return { mensaje: "Admin registrado con éxito", data: admin };
 
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -62,7 +62,7 @@ export class AdminService {
                 throw new NotFoundError("Credenciales incorrectas. Verifique el email y la contraseña.");
             }
             const token = generateToken({ id: admin.adminId, rol: 'admin' });
-            return { mensaje: "Login exitoso", token };
+            return { mensaje: "Login exitoso", data: token };
 
         } catch (error) {
             console.error("Detalles del error:", error);

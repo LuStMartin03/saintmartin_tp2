@@ -5,7 +5,7 @@ import { authenticateRol } from '../middleware/authMiddleware';
 const reservationRouter = Router();
 
 reservationRouter.get('/', authenticateRol('admin'), getAllReservations);
-reservationRouter.post('/createReservation', authenticateRol('admin'), createReservation);
+reservationRouter.post('/createReservation', authenticateRol('client'), createReservation);
 reservationRouter.delete('/:id', authenticateRol('admin'), deleteReservation);
 
 export default reservationRouter;

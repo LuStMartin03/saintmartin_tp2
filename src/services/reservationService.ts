@@ -49,7 +49,7 @@ export class ReservationService {
             await tableService.changeTableStatus(body.tableId, "reservada");
 
             return {
-                message: "Reservacion creada con éxito.", data: reservation
+                message: "Reservacion creada con éxito", data: reservation
             }
         } catch (error) {
             console.error("Detalles del error:", error);
@@ -77,7 +77,7 @@ export class ReservationService {
                 }
             });
             await tableService.changeTableStatus(id, "disponible");
-            return { message: "Reserva eliminada con éxito.", data: deletedReservation}
+            return { message: "Reserva eliminada con éxito", data: deletedReservation}
         } catch (error) {
             console.error("Detalles del error:", error);
             if (error instanceof BaseError) throw error;
