@@ -8,7 +8,7 @@ const orderService = new OrderDishService();
 orderDishRouter.get('/', authenticateRol('admin'), async (_req: Request, res: Response) => {
     try {
         const orderDish = await orderService.getAllOrderDish();
-        res.status(200).json({ ok: true, data: orderDish });
+        res.status(200).json({ ok: true, message: orderDish.message, data: orderDish.data });
     } catch (error: any) {
         const statusCode = error.statusCode || 500;
         res.status(statusCode).json({ ok: false, error: error.message });

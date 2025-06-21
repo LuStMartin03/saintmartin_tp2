@@ -11,15 +11,6 @@ const orderDishService = new OrderDishService();
 
 const db = new PrismaClient();
 
-/*
-    orderId           Int     @id @default(autoincrement())
-    clientId          Int
-    totalAmount       Float
-    discount          Float   @default(0)
-    status            String  @default("en proceso")
-    deliveryAddress   String
-*/
-
 interface orderData {
     clientId: number,
     dishes: number[]
