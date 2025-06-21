@@ -7,6 +7,7 @@ Sistema de gestión para restaurante.
 * Para poder ver la base de datos de mas facil manera:
 ```npx prisma studio```
 * La base de datos ya tiene un par de datos (1 admin, 1 cliente, 7 platos, 5 mesas, 7 pedidos)
+* El último commit fue realizado el 20/6 antes de las 23:59 hora local Argentina. La diferencia de horario con UTC hace que figure como 21/6 en GitHub.
 
 ## Integrante
 - Lucía Saint Martin
